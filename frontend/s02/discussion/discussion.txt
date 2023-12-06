@@ -1,3 +1,125 @@
 Hello World!
 
 This text was generated from the remote repository.
+
+========================================================
+Notes for CLI - Command Line Interface Commands:
+
+GUI is a graphical representation in which the users can interact with software or devices through clickable icons
+
+CLI is a console or text-based represenration which a user types commands in a terminal
+
+pwd - present working directory - shows the current folder we are working on
+
+ls - list the files and folders contained by the current directory
+
+mkdir <folderName> - creates a new directory
+
+cd <folderName> - change directories
+
+touch <fileName> - used to create files
+
+cd - (go back one directory)
+
+cd .. - (one folder up)
+
+rm <name of the file> - to delete file 
+
+rmdir <name of the folder> - to delete an empty directory
+
+rm -r <directory_name> - This command will remove the specified directory and its contents recursively. It will prompt you for confirmation before deleting each file.
+
+rm -rf <directory_name> - This command will forcefully remove the specified directory and its contents without any confirmation prompts. Use this with caution, as it does not provide a chance to recover deleted data.
+========================================================
+
+===========================================
+Creating SSH key
+===========================================
+1. Create an SSH key.
+	Terminal/GitBash
+
+		ssh-keygen
+
+		Important Note:
+			- After triggering the command the user will be prompted to choose a file location on where to store the SSH key in their device. Just press "Enter" to use the default location.
+			- After declaring where the SSH key will be stored, the user will be prompted to add a "passphrase" which will act as the password when using the git account with the associated SSH key. Just press "Enter" again to leave the passphrase empty for ease of access.
+
+2. Copy the SSH key.
+	Terminal/GitBash
+
+		Linux
+			xclip -sel clip < ~/.ssh/id_rsa.pub
+
+		Mac
+			pbcopy < ~/.ssh/id_rsa.pub
+
+		Windows
+			cat ~/.ssh/id_rsa.pub | clip
+
+		Important Note:
+			- The following commands will copy the contents of the "id_rsa.pub" file located inside the ".ssh" folder in the clipboard.
+			- If triggering a command returns an error, check if the path is correct and if the file exists.
+
+			- Alternatively, we can navigate to the ".ssh" folder and locate the "id_rsa.pub" file and open it with our text editors to manually copy the contents.
+
+			- The ".ssh" folder is a hidden folder, go to the hidden files and folders tab in your files explorer.
+			- For Linux users, an error might be encountered xclip is not recognized as an internal or external command. Install xclip using the following command:
+				- sudo apt-get update -y
+				- sudo apt-get install -y xclip
+
+3. Add the generated SSH key to git.
+	Browser > GitLab/GitHub
+
+	https://gitlab.com/-/profile/keys
+
+
+===========================================
+Git Config
+===========================================
+
+git config --global user.email "email@email.com" - configure the email used to push into the remote repo
+
+git config --global user.name "FirstName LastName/ firstname.lastname" - configure the name/username of the user trying to push into gitlab
+
+git config --global user.email - check the email if configured
+
+git config --global user.name - check the name if configured
+
+git config --global --list - check the configuration list
+
+
+===========================================
+Basic Git Commands
+===========================================
+
+git init - initialize a folder as a local remote repository.
+
+git add . (or -A) - trackck all the changes that we've made and prepare these files as a new version to be uploaded.
+
+git commit -m "<commitMessage>" - create a new commit or version of our files to be pushed into our remote repositories.
+
+git remote add <aliasOfRemote> <remoteRepoLink> - add/connect a remote repository to our local repository.
+
+git remote -v - view the remote repositories connected to our local repo.
+
+git remote remove <aliasOfRemote> - remove the existing remote repo (ssh link) in the alias which we will be able to use the alias
+
+git push <alias> master - push our updates/changes/version/commit into our remote repository.
+
+git status - display files that are ready to be added and then committed.
+
+git clone - clone a remote repository and its contents
+
+git pull <remoteAlias> master - pull or get the updates from a remote repo to a local repo.
+
+===========================================
+Git Commands Flow for pushing
+===========================================
+
+For pushing for the first time:
+
+git init -> git remote add origin <remoteRepoLink> -> git add . -> git commit -m "<commitMessage>" -> git push origin master
+
+For pushing with updates:
+
+git add . -> git commit -m "<commitMessage>" -> git push origin master
