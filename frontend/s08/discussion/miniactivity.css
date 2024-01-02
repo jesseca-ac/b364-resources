@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+    text-decoration: underline;
+    color: #4CAF50; /* example color */
+}
+
+img {
+    width: 300px; /* example width */
+    height: 200px; /* example height */
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+}
