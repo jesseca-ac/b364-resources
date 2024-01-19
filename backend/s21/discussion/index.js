@@ -185,3 +185,82 @@ console.log('juan' != 'juan');
 console.log('juan' != juan);
 
 // Strict Equality Operator
+/*
+	- Checks whether the operands are equal/have the same content
+	- also COMPARES the data types of 2 values
+	- JavaScript is a loosely typed language meaning that the values of different data types can be stored in variables.
+	- In combination with type coercion, this sometimes creates problems within our code.
+	- Some programming language require the developers to explicitly define the data type stored in variables to prevent this from happening
+	- Strict equality operators are better to use in most cases to ensure that data types provided are correct
+*/
+
+console.log(1 === 1);
+console.log(1 === 2);
+console.log(1 === '1');
+console.log(0 === false);
+console.log('juan' === 'juan');
+console.log('juan' === juan);
+
+// Strict Inequality Operator
+/*
+	- Checks whether the operands are not equal/have the same content
+	- Also COMPARES the data types of 2 values
+*/
+
+console.log(1 !== 1);
+console.log(1 !== 2);
+console.log(1 !== '1');
+console.log(0 !== false);
+console.log('juan' !== 'juan');
+console.log('juan' !== juan);
+
+// [SECTION] Relational Operators
+// Some comparison operators check whether one value is greater or less than to the other value
+
+let a = 50;
+let b = 65;
+
+// GT or Greater Than Operator ( > )
+let isGreaterThan = a > b;
+// LT or Less Than Operator ( < )
+let isLessThan = a < b;
+// GTE or Greater than or Equal Operator ( >= )
+let isGte = a >= b;
+// LTE or Less Than or Equal Operator ( <= )
+let isLte = a <= b;
+
+// Like our equality comparison operators, relational operators also return boolean which we can save in a variable or use in a conditional statement
+console.log(isGreaterThan);
+console.log(isLessThan);
+console.log(isGte);
+console.log(isLte);
+
+let numStr = "30";
+// forced coercion to change string to a number
+console.log(a > numStr);
+// 65 is not less than or equal to 30
+console.log(b <= numStr);
+
+let str = "twenty";
+console.log(b >= str);
+// Since the string is not numeric, the string was converted to a number and it resulted to NaN. 65 is not greater than NaN.
+
+// [SECTION] Logical Operators
+
+let isLegalAge = true;
+let isRegistered = false;
+
+// Logical AND Operator (&& - Double Ampersand)
+// Returns true if ALL operands are true
+let allRequirementsMet = isLegalAge && isRegistered;
+console.log("Result of logical AND Operator: " + allRequirementsMet);
+
+// Logical OR Operator (|| - Double Pipe)
+// Returns true if ONE of the operands are true
+let someRequirementsMet = isLegalAge || isRegistered;
+console.log("Result of Logical OR Operator: " + someRequirementsMet);
+
+// Logical NOT Operator (! - Exclamation Point)
+// Returns the opposite value
+let someRequirementsNotMet = !isRegistered;
+console.log("Result of logical NOT Operator: " + someRequirementsNotMet);
