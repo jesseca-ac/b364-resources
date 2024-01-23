@@ -19,8 +19,19 @@
 		Note: This is optional.
 
 */
+function getUserInfo() {
+	return {
+		name: "John Doe",
+		age: 25,
+		address: "123 Street, Quezon City",
+		isMarried: false,
+		petName: "dannys"
+	}
+}
 
-
+let userInfo = getUserInfo();
+console.log(userInfo);
+// getUserInfo();
 
 
 /*
@@ -37,7 +48,12 @@
 	
 */
 
+function getArtistsArray() {
+	return ["Ben & Ben", "Arthur Nery", "Linkin Park", "Paramore", "Taylor Swift"];
+}
 
+let bandsArray = getArtistsArray();
+console.log(bandsArray);
 
 
 /*
@@ -51,9 +67,13 @@
 
 		Note: This is optional.
 */
+function getSongsArray() {
+	return ["Kathang Isip", "Binhi", "In the End", "Brick by Boring Brick", "Love Story"]
+	console.log("Hi mag rereturn sha")
+}
 
-
-
+let songsArray = getSongsArray();
+console.log(songsArray);
 
 /*
 	4. Create a function named getMoviesArray which is able to return an array with at least 5 titles of your favorite movies.
