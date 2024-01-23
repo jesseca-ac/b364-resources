@@ -143,15 +143,3 @@ createFullName(firstName, middleName, lastName);
 
 // The order of the argument is the same to the order of parameters.
 
-
-/*
-	1. Create a function called ringsPrice which will compute for the total price of rings purchased for the engagement and wedding.
-		- Numbers must be provided as arguments.
-		- Return the total price of the rings.	   
-*/
-
-function ringsPrice (engagementRing, weddingRings) {
-	return engagementRing + weddingRings;
-}
-
-const rings = ringsPrice(299, 25000);
