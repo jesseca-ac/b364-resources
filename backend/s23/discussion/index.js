@@ -77,12 +77,13 @@ printName("Juana");
 // When the "printName()" is called again, it stores the value "John" in the parameter "name" then uses it to print a message.
 
 // Variables can also be passed as an argument
-
 let sampleVariable = "Yui"
 printName(sampleVariable);
 
 // Function arguments cannot be used by a function if there are no parameters provided in the function.
 
+
+//Now, you can create a function which can be re-used to check for a number's divisibility instead of having to manually do it every time like our previous activity!
 function checkDivisibilityBy8(num){
 	let remainder = num % 8;
 	console.log("The remainder of " + num + " divided by 8 is " + remainder);
@@ -112,18 +113,26 @@ function invokeFunction(argumentFunction){
 	argumentFunction();
 }
 
+// Adding and removing the parentheses "()" impacts the output of JavaScript heavily
+// When a function is used with parentheses "()", it denotes invoking/calling a function
+// A function used without a parenthesis is normally associated with using the function as an argument to another function
 invokeFunction(argumentFunction);
 
+//or finding more information about a function in the console using console.log()
 console.log(argumentFunction);
 
 
 // Multiple Parameters
+// Multiple "arguments" will correspond to the number of "parameters" declared in a function in succeeding order.
 
 function createFullName(firstName, middleName, lastName) {
 	console.log(firstName + ' ' + middleName + ' ' + lastName);
 }
 
-createFullName('Juan', 'Dela', 'Cruz', 'Hello');
+createFullName('Juan', 'Dela', 'Cruz');
+// "Juan" will be stored in the parameter "firstName"
+// "Dela" will be stored in the parameter "middleName"
+// "Cruz" will be stored in the parameter "lastName"
 createFullName('Juan', 'Dela');
 
 // Providing more/less arguments that the expected parameters will not return an error.
@@ -141,5 +150,5 @@ createFullName(firstName, middleName, lastName);
 
 // Parameter names are just names to refer to the argument. Even if we change the name of the parameters the arguments will be received in the same order it was passed.
 
-// The order of the argument is the same to the order of parameters.
+// The order of the argument is the same to the order of parameters.The first argument will be stored in the first parameter, second argument will be stored in the second parameter and so on.
 
