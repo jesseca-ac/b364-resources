@@ -198,3 +198,39 @@ let fiveStarMovies = movies.filter(movie => {
 });
 
 console.log(fiveStarMovies);
+
+// includes() - checks if the argument passed can be found in the array
+let products = ['Mouse', 'Keyboard', 'Laptop', 'Monitor'];
+
+let productFound1 = products.includes("Mouse");
+console.log(productFound1);
+
+let filteredProducts = products.filter(function(product){
+	return product.toLowerCase().includes('m');
+});
+
+console.log(filteredProducts);
+
+// reduce() - evaluates elements from left to right and returns/reduces the array into a single value
+/*
+	Syntax:
+	  let/const resultArray = arrayName.reduce(function(accumulator, currentValue){ return expression/operation })
+*/
+
+let iteration = 0;
+
+let reducedArray = numbers.reduce(function(x, y){
+	console.warn('current iteration: ' + ++iteration);
+	console.log('accumulator: ' + x);
+	console.log('currentValue: ' + y);
+
+	return x + y;
+})
+console.log("Result of reduce method: " + reducedArray);
+
+let lists = ['Hello', 'Again', 'World'];
+
+let reducedJoin = lists.reduce(function(x, y){
+	return x + ' ' + y;
+});
+console.log("Result of reduce method: " + reducedJoin);
