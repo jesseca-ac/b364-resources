@@ -59,10 +59,10 @@ console.log('Result from concat method:')
 console.log(combinedTasks);
 
 // join() - returns an array as a string separated by specified separator string
-let users = ['John', 'Jane', 'Joe', 'Robert'];
-console.log(users.join());
-console.log(users.join(''));
-console.log(users.join(' - '));
+// let users = ['John', 'Jane', 'Joe', 'Robert'];
+// console.log(users.join());
+// console.log(users.join(''));
+// console.log(users.join(' - '));
 
 // Iteration methods
 
@@ -90,3 +90,111 @@ allTasks.forEach(function(task){
 
 console.log("Result of filtered tasks:");
 console.log(filteredTasks);
+
+let adminList = [];
+
+let users = [
+	{
+		username: "peterSmith",
+		isAdmin: false
+	},
+	{
+		username: "andrewJones99",
+		isAdmin: true
+	},
+	{
+		username: "alexMartin",
+		isAdmin: false
+	},
+	{
+		username: "smithyS",
+		isAdmin: true
+	}
+];
+
+users.forEach(user => {
+	console.log(user)
+
+	if(user.isAdmin === true){
+		adminList.push(user.username)
+	}
+})
+
+console.log(adminList);
+
+console.log(users);
+
+// map() - iterates on each element AND returns new array with different values depending on the result of the function's operation
+
+let numbers = [1, 2, 3, 4, 5];
+
+let numberMap = numbers.map(function(number){
+	return number * number;
+});
+
+console.log("Original array:");
+console.log(numbers);
+console.log("Result of map method:");
+console.log(numberMap);
+
+// every() - checks if all elements in an array meet the given condition
+let allValid = numbers.every(function(number){
+	return (number < 3);
+});
+console.log("Result of every method:");
+console.log(allValid);
+
+// some() - checks if at least one element in the array meets the given condition
+let someValid = numbers.some(function(number){
+	return (number < 2);
+});
+console.log("Result of some method:");
+console.log(someValid);
+
+// filter() - returns a new array that contains elements which meets the given condition
+let filterValid = numbers.filter(function(number){
+	return (number < 3);
+});
+console.log("Result of filter method:");
+console.log(filterValid);
+
+// No elements found
+let nothingFound = numbers.filter(function(number){
+	return (number = 0);
+})
+console.log("Result of filter method:");
+console.log(nothingFound);
+
+// Filtering using forEach()
+let filteredNumbers = []
+
+numbers.forEach(function(number){
+	if(number < 3){
+		filteredNumbers.push(number);
+	}
+});
+console.log("Result of filter method:");
+console.log(filteredNumbers);
+
+let movies = [
+	{
+		name: "The Godfather",
+		rating: 5
+	},
+	{
+		name: "Star Wars IV: A new hope",
+		rating: 4
+	},
+	{
+		name: "Schindler's List",
+		rating: 5
+	}
+];
+
+let fiveStarMovies = movies.filter(movie => {
+	console.log(movie);
+
+	return movie.rating > 5;
+});
+
+console.log(fiveStarMovies);
