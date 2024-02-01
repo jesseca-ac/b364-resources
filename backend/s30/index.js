@@ -126,8 +126,8 @@ const showPosts = function(posts) {
 			<div id="post-${post.id}">
 				<h3 id="post-title-${post.id}">${post.title}</h3>
 				<p id="post-body-${post.id}">${post.body}</p>
-				<button onclick="edit('${post.id}')">Edit</button>
-				<button onclick="deletePost"('${post.id}')">Delete</button>
+				<button onclick="editPost('${post.id}')">Edit</button>
+				<button onclick="delete"('${post.id}')">Delete</button>
 			</div>
 		`;
 	});
@@ -176,3 +176,11 @@ document.querySelector('#form-edit-post').addEventListener('submit',(e) => {
 	});
 
 });
+
+// NOTE: This is a sample for the  delete post, an error is expected there are 
+// DELETE POST
+const deletePost = (id) => {
+    fetch(`https://jsonplaceholder.typicode.com/posts/`, { method: 'DELETE' });
+    document.querySelector(`#post-${id}`).remove();
+
+   
