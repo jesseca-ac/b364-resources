@@ -127,7 +127,7 @@ const showPosts = function(posts) {
 				<h3 id="post-title-${post.id}">${post.title}</h3>
 				<p id="post-body-${post.id}">${post.body}</p>
 				<button onclick="editPost('${post.id}')">Edit</button>
-				<button onclick="delete"('${post.id}')">Delete</button>
+				<button onclick="deletePost('${post.id}')">Delete</button>
 			</div>
 		`;
 	});
@@ -182,5 +182,4 @@ document.querySelector('#form-edit-post').addEventListener('submit',(e) => {
 const deletePost = (id) => {
     fetch(`https://jsonplaceholder.typicode.com/posts/`, { method: 'DELETE' });
     document.querySelector(`#post-${id}`).remove();
-
-   
+}
