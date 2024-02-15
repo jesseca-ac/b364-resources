@@ -46,6 +46,105 @@ app.use(express.urlencoded({extended:true}));
 		const Task = mongoose.model("Task", taskSchema);
 
 
+// [SECTION] Routes
+	// Creating a new task
+
+	// Business Logic
+	/*
+	1. Add a functionality to check if there are duplicate tasks
+	    - If the task already exists in the database, we return an error
+	    - If the task doesn't exist in the database, we add it in the database
+	2. The task data will be coming from the request's body
+	3. Create a new Task object with a "name" field/property
+	4. The "status" property does not need to be provided because our schema defaults it to "pending" upon creation of an object
+	*/
+
+app.post("/tasks", (request, response) =>{
+		// Check whether the task to be save is existing in our database or not.
+
+		// findOne method returns the first matching document that matches the criteria.
+		Task.findOne({name : request.body.name}).then(result => {
+			console.log(result);
+			if(result === null){
+				let newTask = new Task({
+					name: request.body.name
+				})
+
+				// task
+				newTask.save().then(save => response.send("Task saved!"))
+			}else{
+				return response.send("The task is already existing!")
+			}
+		})
+
+
+
+})
+
+// Getting all the tasks
+
+    // Business Logic
+    /*
+    1. Retrieve all the documents
+    2. If an error is encountered, print the error
+    3. If no errors are found, send a success status back to the client/Postman and return an array of documents
+    */
+
+app.get("/tasks", (request, response) => {
+
+		//find method is mongoose method tha is similar to mongodb find and findMany
+	Task.find({}).then(result => {
+		return response.send(result);
+	}).catch(error => response.send(error));
+
+})
+// Activity will start here
+//User Schema/Model
+
+    const userSchema = new mongoose.Schema({
+
+        firstName: ,
+        : String,
+        email: ,
+        password : 
+
+    })
+
+    const User = mongoose.model();
+
+// Route for creating a user
+
+    app.post("/register", (req, res)=> {
+
+        // Create/instantiate a "newUser" from the "User" model
+        let newUser = new User({
+            email : req.body.email,
+            password : req.body.password
+        });
+
+        // Create a document in the database
+        newUser.save()
+
+    }) 
+
+// Route for logging in a user
+
+    app.post("/login", (req, res)=> {
+
+        User.findOne({ email : req.body.email }).then((result, err) => {
+
+            // Check if email exists in the database.
+
+                //if it is check password from db and req.body match and send a message to the client for logging in.
+                    //else, send a message to the client for wrong password.
+
+            // If email does not exist in the database send a message to the client for email does not exist.
+
+        })
+
+    }) 
+
+
 
 
 
