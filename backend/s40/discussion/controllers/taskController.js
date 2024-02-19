@@ -75,7 +75,7 @@ module.exports.createTask = (requestBody) => {
 module.exports.deleteTask = (taskId) => {
 
 
-    // The "findByIdAndRemove" Mongoose method will look for a task with the same id provided from the URL and remove/delete that document from MongoDB
+    // The "findByIdAndDelete" Mongoose method will look for a task with the same id provided from the URL and remove/delete that document from MongoDB
 
 
     // The Mongoose method "findByIdAndRemove" method looks forr the document using the "_id" field
