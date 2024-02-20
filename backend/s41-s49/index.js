@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 // Allows us to control the app's Cross Origin Resource Sharing settings
 const cors = require("cors");
 
+// Allows access to routes defined within our application
+const userRoutes = require("./routes/user");
+
 // [SECTION] Environment Setup
 const port = 4000;
 
@@ -24,6 +27,9 @@ app.use(cors());
 mongoose.connect("mongodb+srv://andreivon:admin1234@cluster0.qwsgp7m.mongodb.net/Batch364-todo?retryWrites=true&w=majority");
 
 mongoose.connection.once('open', () => console.log('Now connected to MongoDB Atlas.'));
+
+// Groups all routes in userRoutes under "/users" base endpoint
+app.use("/users", userRoutes);
 
 // [SECTION] Server Gateway Response
 // "process.env.PORT || port" will use the environment variable if it is a available or will use port 4000 if none is defined
