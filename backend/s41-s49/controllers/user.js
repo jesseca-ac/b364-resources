@@ -61,22 +61,32 @@ module.exports.registerUser = (reqBody) => {
 */
 
 module.exports.loginUser = (reqBody) => {
+	// The "findOne" method returns the first record in the collection that matches the search criteria
+	// We use the "findOne" method instead of the "find" method which returns all records that match the search criteria
 	return User.findOne({ email : reqBody.email })
 	.then(result => {
 
+		// User does not exist
 		if(result == null){
 			return false;
 
+		// User exists
 		} else {
 
+			// Creates the variable "isPasswordCorrect" to return the result of comparing the login form password and the database password
+			// The "compareSync" method is used to compare a non encrypted password from the login form to the encrypted password retrieved from the database and returns "true" or "false" value depending on the result
 			// A good coding practice for boolean variable/constants is to use the word "is" or "are" at the beginning in the form of is+Noun
-				// example. isSing, isDone, isAdmin, areDone, etc...
+				//example. isSingle, isDone, isAdmin, areDone, etc..
 			const isPasswordCorrect = bcrypt.compareSync(reqBody.password, result.password);
 
 			if (isPasswordCorrect){
 
+				// Generate an access token
+				// Uses the "createAccessToken" method defined in the "auth.js" file
+				// Returning an object back to the client application is common practice to ensure information is properly labeled and real world examples normally return more complex information represented by objects
 				return { access : auth.createAccessToken(result) }
 
+			// Passwords do not match
 			} else {
 
 				return false;
