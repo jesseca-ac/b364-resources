@@ -95,3 +95,20 @@ module.exports.loginUser = (reqBody) => {
 	})
 	.catch(err => err)
 };
+
+//[SECTION] Retrieve user details
+/*
+	Steps:
+	1. Retrieve the user document using it's id
+	2. Change the password to an empty string to hide the password
+	3. Return the updated user record
+*/
+module.exports.getProfile = (reqBody) => {
+
+	return User.findById(reqBody.id)
+	.then(result => {
+		result.password = "";
+		return result;
+	})
+	.catch(err => err)
+};

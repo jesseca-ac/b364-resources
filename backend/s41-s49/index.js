@@ -7,6 +7,7 @@ const cors = require("cors");
 
 // Allows access to routes defined within our application
 const userRoutes = require("./routes/user");
+const courseRoutes = require("./routes/course");
 
 // [SECTION] Environment Setup
 const port = 4000;
@@ -30,6 +31,7 @@ mongoose.connection.once('open', () => console.log('Now connected to MongoDB Atl
 
 // Groups all routes in userRoutes under "/users" base endpoint
 app.use("/users", userRoutes);
+app.use("/courses", courseRoutes);
 
 // [SECTION] Server Gateway Response
 // "process.env.PORT || port" will use the environment variable if it is a available or will use port 4000 if none is defined

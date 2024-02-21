@@ -22,4 +22,10 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
 	userController.loginUser(req.body).then(resultFromController => res.send(resultFromController))
 });
+
+//[SECTION] Route for retrieving user details
+router.post("/details", (req,res)=>{
+	userController.getProfile(req.body).then(resultFromController => res.send(resultFromController));
+});
+
 module.exports = router;
