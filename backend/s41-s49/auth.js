@@ -58,17 +58,20 @@ module.exports.verify = (req, res, next) => {
 		"err" is a built-in variable of express to handle errors
 		*/
 		jwt.verify(token, secret, function(err, decodedToken){
+			// If there was an error in verifcation, an erratic token, a wrong secret within the token, we will send a message to the client.
 			if (err){
 				return res.send({
 					auth: "Failed",
 					message: err.message
 				})
 			} else {
-				console.log("result from verift method:")
+				console.log("result from verify method:")
 				console.log(decodedToken)
 
+				// Else, if our token is verified to be correct, then we will update the request and add the user's decoded details
 				req.user = decodedToken;
 
+				// next() is an expressJS function which allows us to move to the next function in the route. It also passes details of the request and response to the next function/middleware.
 				next();
 			}
 		})
