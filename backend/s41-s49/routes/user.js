@@ -28,9 +28,7 @@ router.post("/register", (req, res) => {
 
 
 // [SECTION] Route for user authentication
-router.post("/login", verify, (req, res) => {
-	userController.loginUser(req.body).then(resultFromController => res.send(resultFromController))
-});
+router.post("/login", userController.loginUser);
 
 
 module.exports = router;
