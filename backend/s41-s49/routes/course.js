@@ -12,10 +12,15 @@ const {verify, verifyAdmin} = auth;
 //[SECTION] Route for creating a course
 router.post("/", verify, verifyAdmin, courseController.addCourse); 
 
+router.get("/all", verify, verifyAdmin, courseController.getAllCourses);
+
 //[SECTION] Route for retrieving all courses
-router.get("/", (req,res)=>{
-	courseController.getAllCourses().then(resultFromController => res.send(resultFromController));
-}); 
+router.get("/", courseController.getAllActive);
+
+// [SECTION] Route for retrieving a specific course
+router.post("/specific", courseController.getCourse);
+
+router.patch("/:courseId", verify, verifyAdmin, courseController.updateCourse);
 
 //[SECTION] Export Route System
 // Allows us to export the "router" object that will be accessed in our "index.js" file

@@ -11,20 +11,20 @@ const auth = require("../auth");
 		2. Use the "then" method to send a response back to the client application based on the result of the "find" method
 */
 
-module.exports.checkEmailExists = (reqBody) => {
+module.exports.checkEmailExists = (req,res) => {
 	// The result is sent back to the client via the "then" method found in the route file.
 								
-	return User.find({ email : reqBody.email })
+	return User.find({ email : req.body.email })
 	.then(result => {
 		// The "find" method returns a record if a match is found
 		if (result.length > 0) {
 
-			return true;
+			return res.send(true);
 		// No duplicate email found
 		// The user is not yet registered in the database
 		} else {
 
-			return false;
+			return res.send(false);
 		};
 	})
 	.catch(err => err)
@@ -38,17 +38,17 @@ module.exports.checkEmailExists = (reqBody) => {
 		2. Make sure that the password is encrypted
 		3. Save the new User to the database
 */
-module.exports.registerUser = (reqBody) => {
+module.exports.registerUser = (req,res) => {
 	let newUser = new User({
-		firstName : reqBody.firstName,
-		lastName : reqBody.lastName,
-		email : reqBody.email,
-		mobileNo : reqBody.mobileNo,
-		password : bcrypt.hashSync(reqBody.password, 10)
+		firstName : req.body.firstName,
+		lastName : req.body.lastName,
+		email : req.body.email,
+		mobileNo : req.body.mobileNo,
+		password : bcrypt.hashSync(req.body.password, 10)
 	})
 
 	return newUser.save()
-	.then((result) => result)
+	.then((result) => res.send(result))
 	.catch(err => err)
 };
 

@@ -18,13 +18,11 @@ router.get("/details", verify, userController.getProfile);
 // Route for checking if the user's email already exists in the database
 // Invokes the "checkEmailExists" function from the controller file to communicate with our database
 // This passes the "body" property of our "request" object to the corresponding controller function
-router.post("/checkEmail", (req, res) => {
-	userController.checkEmailExists(req.body).then(resultFromController => res.send(resultFromController));
-});
 
-router.post("/register", (req, res) => {
-	userController.registerUser(req.body).then(resultFromController => res.send(resultFromController))
-});
+router.post("/checkEmail", userController.checkEmailExists);
+
+router.post("/register", userController.registerUser);
+
 
 
 // [SECTION] Route for user authentication
