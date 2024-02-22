@@ -1,6 +1,7 @@
 //[SECTION] Dependencies and Modules
 const Course = require("../models/Course");
 
+
 //[SECTION] Create a course
 /*
 	Steps: 

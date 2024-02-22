@@ -103,12 +103,25 @@ module.exports.loginUser = (reqBody) => {
 	2. Change the password to an empty string to hide the password
 	3. Return the updated user record
 */
-module.exports.getProfile = (reqBody) => {
+module.exports.getProfile = (req, res) => {
 
-	return User.findById(reqBody.id)
-	.then(result => {
-		result.password = "";
-		return result;
+	// The "return" keyword ensures the end of the getProfile method.
+	// Since getProfile is now used as a middleware it should have access to "req.user" if the "verify" method is used before it.
+	// Order of middlewares is important. This is because the "getProfile" method is the "next" function to the "verify" method, it receives the updated request with the user id from it.
+	return User.findById(req.user.id)
+	.then(user => {
+		console.log(user)
+		user.password = "";
+		res.send(user);
 	})
 	.catch(err => err)
 };
+
+/*
+Important Note
+	- With this, routes now simply handle the activation of the controller.
+	- Controllers now handle all business logic.
+	- The controllers now end the cycle as it is now expected to use res.send() and send a response.
+	- next can be omitted from a middleware/controller if it will not pass the data to another function.
+	- Controllers as middleware then make our code more readable and modular. Where you can simply add or remove controllers or middleware from a route.
+*/

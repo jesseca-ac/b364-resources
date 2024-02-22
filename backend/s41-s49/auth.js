@@ -77,3 +77,19 @@ module.exports.verify = (req, res, next) => {
 		})
 	}
 }
+
+module.exports.verifyAdmin = (req, res, next) => {
+// Checks if the owner of the token is an admin.
+if(req.user.isAdmin){
+	// If it is, move to the next middleware/controller using the next() method.
+	next();
+} else {
+	// Else, end the request-response cycle by sending the appropriate response and status code.
+	return res.status(403).send({
+		auth: "Failed",
+		message: "Action Forbidden"
+	})
+}
+	console.log("result from verifyAdmin method");
+	console.log(req.user);
+}
