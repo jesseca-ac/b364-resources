@@ -69,6 +69,9 @@ module.exports.addCourse = (req, res) => {
 	1. Retrieve all courses using the mongoose "find" method
 	2. Use the "then" method to send a response back to the client appliction based on the result of the "find" method
 */
+
+// In asynchronous operations like the one using promises, you typically don't need to use a try block. Instead, you can handle errors using the .catch() method after the promise (.then()). In this case, if any error occurs during the promise execution, it will be caught and handled by the .catch() block, sending the error response back.
+
 module.exports.getAllCourses = (req, res) => {
 
 	return Course.find({})
@@ -97,10 +100,53 @@ module.exports.getAllActive = (req, res) => {
 	1. Retrieve a course using the mongoose "findById" method
 	2. Use the "then" method to send a response back to the client appliction based on the result of the "find" method
 */
+/*
+	Hi 364!
+	UPDATED VERSION!! 
+		Now we would make our request using the params :)
+
+*/
 module.exports.getCourse = (req, res) => {
 
-	Course.findById(req.body.id)
+	Course.findById(req.params.courseId)
 	.then(course => res.send(course))
 	.catch(err => res.send(err));
 	
 };
+
+	//[SECTION] Update a course
+    /*
+    	Steps: 
+    	1. Create an object containing the data from the request body
+    	2. Retrieve and update a course using the mongoose "findByIdAndUpdate" method, passing the ID of the record to be updated as the first argument and an object containing the updates to the course
+    	3. Use the "then" method to send a response back to the client appliction based on the result of the "find" method
+    */
+    module.exports.updateCourse = (req, res)=>{
+
+    	let updatedCourse = {
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price
+        }
+
+        // findByIdandUpdate() finds the the document in the db and updates it automatically
+        // req.body is used to retrieve data from the request body, commonly through form submission
+        // req.params is used to retrieve data from the request parameters or the url
+        // req.params.courseId - the id used as the reference to find the document in the db retrieved from the url
+        // updatedCourse - the updates to be made in the document
+        return Course.findByIdAndUpdate(req.params.courseId, updatedCourse)
+        .then(course => {
+            if (course) {
+                res.send(true);
+            } else {
+                res.send(false);
+            }
+        })
+        .catch(err => res.send(err));
+    };
+
+	/*
+	Important Note:
+		- While incorporating a try-catch block for handling synchronous errors is a good practice, it might not be necessary or effective in this specific case because the main operations within the function are asynchronous (e.g., findByIdAndUpdate which returns a promise).
+		- In this scenario, utilizing .catch() directly after the promise is often sufficient to catch and handle any errors that might occur during asynchronous operations. The use of try-catch inside can be limited to synchronous operations or to wrap the whole asynchronous function, but it won't capture errors that happen within asynchronous functions.
+	*/

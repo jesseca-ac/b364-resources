@@ -18,7 +18,11 @@ router.get("/all", verify, verifyAdmin, courseController.getAllCourses);
 router.get("/", courseController.getAllActive);
 
 // [SECTION] Route for retrieving a specific course
-router.post("/specific", courseController.getCourse);
+/*
+	UPDATED VERSION! :) 
+	Now we will retrieve the courses using parameters and the wildcard :)
+*/
+router.get("/:courseId", courseController.getCourse);
 
 router.patch("/:courseId", verify, verifyAdmin, courseController.updateCourse);
 
