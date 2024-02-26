@@ -21,8 +21,8 @@ module.exports.addCourse = (req, res) => {
 
 	// Saves the created object to our database
 	return newCourse.save()
-	.then(result => res.send(result))
-	.catch(err => res.send(err));
+	.then(result => res.status(201).send(result))
+	.catch(err => res.status(500).send(err));
 }; 
 
 // [SECTION] Use of Promise.catch()
@@ -75,8 +75,8 @@ module.exports.addCourse = (req, res) => {
 module.exports.getAllCourses = (req, res) => {
 
 	return Course.find({})
-	.then(result => res.send(result))
-	.catch(err => res.send(err));
+	.then(result => res.status(200).send(result))
+	.catch(err => res.status(500).send(err));
 
 };
 
@@ -89,8 +89,8 @@ module.exports.getAllCourses = (req, res) => {
 module.exports.getAllActive = (req, res) => {
 
 	Course.find({ isActive: true })
-	.then(result => res.send(result))
-	.catch(err => res.send(err));
+	.then(result => res.status(200).send(result))
+	.catch(err => res.status(500).send(err));
 
 };
 
@@ -109,8 +109,8 @@ module.exports.getAllActive = (req, res) => {
 module.exports.getCourse = (req, res) => {
 
 	Course.findById(req.params.courseId)
-	.then(course => res.send(course))
-	.catch(err => res.send(err));
+	.then(course => res.status(200).send(course))
+	.catch(err => res.status(500).send(err));
 	
 };
 
@@ -121,32 +121,92 @@ module.exports.getCourse = (req, res) => {
     	2. Retrieve and update a course using the mongoose "findByIdAndUpdate" method, passing the ID of the record to be updated as the first argument and an object containing the updates to the course
     	3. Use the "then" method to send a response back to the client appliction based on the result of the "find" method
     */
-    module.exports.updateCourse = (req, res)=>{
+module.exports.updateCourse = (req, res)=>{
 
-    	let updatedCourse = {
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price
+	let updatedCourse = {
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price
+    }
+
+    // findByIdandUpdate() finds the the document in the db and updates it automatically
+    // req.body is used to retrieve data from the request body, commonly through form submission
+    // req.params is used to retrieve data from the request parameters or the url
+    // req.params.courseId - the id used as the reference to find the document in the db retrieved from the url
+    // updatedCourse - the updates to be made in the document
+    return Course.findByIdAndUpdate(req.params.courseId, updatedCourse)
+    .then(course => {
+        if (course) {
+            res.status(200).send(true);
+        } else {
+            res.status(404).send(false);
         }
+    })
+    .catch(err => res.status(500).send(err));
+};
 
-        // findByIdandUpdate() finds the the document in the db and updates it automatically
-        // req.body is used to retrieve data from the request body, commonly through form submission
-        // req.params is used to retrieve data from the request parameters or the url
-        // req.params.courseId - the id used as the reference to find the document in the db retrieved from the url
-        // updatedCourse - the updates to be made in the document
-        return Course.findByIdAndUpdate(req.params.courseId, updatedCourse)
-        .then(course => {
-            if (course) {
-                res.send(true);
-            } else {
-                res.send(false);
-            }
-        })
-        .catch(err => res.send(err));
-    };
+/*
+Important Note:
+	- While incorporating a try-catch block for handling synchronous errors is a good practice, it might not be necessary or effective in this specific case because the main operations within the function are asynchronous (e.g., findByIdAndUpdate which returns a promise).
+	- In this scenario, utilizing .catch() directly after the promise is often sufficient to catch and handle any errors that might occur during asynchronous operations. The use of try-catch inside can be limited to synchronous operations or to wrap the whole asynchronous function, but it won't capture errors that happen within asynchronous functions.
+*/
 
-	/*
-	Important Note:
-		- While incorporating a try-catch block for handling synchronous errors is a good practice, it might not be necessary or effective in this specific case because the main operations within the function are asynchronous (e.g., findByIdAndUpdate which returns a promise).
-		- In this scenario, utilizing .catch() directly after the promise is often sufficient to catch and handle any errors that might occur during asynchronous operations. The use of try-catch inside can be limited to synchronous operations or to wrap the whole asynchronous function, but it won't capture errors that happen within asynchronous functions.
-	*/
+//[SECTION] Archive a course
+/*
+	Steps: 
+	1. Create an object and with the keys to be updated in the record
+	2. Retrieve and update a course using the mongoose "findByIdAndUpdate" method, passing the ID of the record to be updated as the first argument and an object containing the updates to the course
+	3. If a course is updated send a response of "true" else send "false"
+	4. Use the "then" method to send a response back to the client appliction based on the result of the "findByIdAndUpdate" method
+*/
+module.exports.archiveCourse = (req, res) => {
+
+    let updateActiveField = {
+        isActive: false
+    }
+
+    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
+    .then(course => {
+        if (course) {
+            res.status(200).send(true);
+        } else {
+            res.status(400).send(false);
+        }
+    })
+    .catch(err => res.status(500).send(err));
+};
+
+/*
+Important Note:
+	- In managing databases, it's common practice to soft delete our records and what we would implement in the "delete" operation of our application
+	- The "soft delete" happens here by simply updating the course "isActive" status into "false" which will no longer be displayed in the frontend application whenever all active courses are retrieved
+	- This allows us access to these records for future use and hides them away from users in our frontend application
+	// There are instances where hard deleting records is required to maintain the records and clean our databases
+	- The use of "hard delete" refers to removing records from our database permanently
+*/
+
+//[SECTION] Activate a course
+/*
+	Steps: 
+	1. Create an object and with the keys to be updated in the record
+	2. Retrieve and update a course using the mongoose "findByIdAndUpdate" method, passing the ID of the record to be updated as the first argument and an object containing the updates to the course
+	3. If the user is an admin, update a course else send a response of "false"
+	4. If a course is updated send a response of "true" else send "false"
+	5. Use the "then" method to send a response back to the client appliction based on the result of the "findByIdAndUpdate" method
+*/
+module.exports.activateCourse = (req, res) => {
+
+    let updateActiveField = {
+        isActive: true
+    }
+    
+    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
+    .then(course => {
+        if (course) {
+            res.status(200).send(true);
+        } else {
+            res.status(400).send(false);
+        }
+    })
+    .catch(err => res.status(500).send(err));
+};

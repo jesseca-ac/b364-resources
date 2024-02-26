@@ -17,10 +17,6 @@ const enrollmentSchema = new mongoose.Schema({
 	totalPrice: {
 		type: Number,
 		required: [true, 'totalPrice is Required']
-	},
-	enrolledOn: {
-		type: Date,
-		default: 'Enrolled'
 	}
 });
 
