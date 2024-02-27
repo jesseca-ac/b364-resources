@@ -13,24 +13,37 @@ const auth = require("../auth");
 */
 
 module.exports.checkEmailExists = (req,res) => {
-	// The result is sent back to the client via the "then" method found in the route file.
-								
-	return User.find({ email : req.body.email })
-	.then(result => {
+	if(req.body.email.includes("@")){
+		return User.find({ email : req.body.email })
+		.then(result => {
+
 		// The "find" method returns a record if a match is found
-		if (result.length > 0) {
+			if (result.length > 0) {
 
-			return res.send(true);
-		// No duplicate email found
-		// The user is not yet registered in the database
-		} else {
+				// If there is a duplicate email, send true with 409 http status
+				return res.status(409).send({ error: "Duplicate Email Found"});
+			// No duplicate email found
+			// The user is not yet registered in the database
+			} else {
 
-			return res.send(false);
-		};
-	})
-	.catch(err => res.send(err));
-};
-
+				//if there is no duplicate email, send false with 404 http status 
+				res.status(404).send({ message: "Email not found"})
+			}
+		})
+		.catch(err => res.send(err))
+	} else {
+		res.status(400).send({ error: "Invalid Email"})
+	}
+}
+/*
+	IMPORTANT NOTE
+		- What happens in the user's browser when running the frontend code we've developed is beyond our control. The browser is a black box that, at some point, after the user has interacted with our code, might send us back a piece of data that our application cannot process. There is no guarantee that the data provided is what we need.
+		- We can only validate the data coming from users to check if our backend recieved the information it is intended to receive.
+		- We have done validations in the earlier stages of our API developtment.
+		- That validation is the schema-level validation wherein we are checking if the data to be stored in our database is aligned with the properties of the models we have set for a collection/schema. e.g. User, Course, and Enrollment 
+		-409 HTTP Status code refers to duplicate record which means that there is a duplicate document found in our database.
+		- Usually, true/false response doesn't test the application response. However, for better communication to the client, it's better to send specific messages to validate wheter or not the data received needs correction. 
+*/
 
 // [SECTION] User registration
 /*
@@ -40,17 +53,30 @@ module.exports.checkEmailExists = (req,res) => {
 		3. Save the new User to the database
 */
 module.exports.registerUser = (req,res) => {
-	let newUser = new User({
-		firstName : req.body.firstName,
-		lastName : req.body.lastName,
-		email : req.body.email,
-		mobileNo : req.body.mobileNo,
-		password : bcrypt.hashSync(req.body.password, 10)
-	})
+	// Check if the email is in the right format
+	if (!req.body.email.includes("@")){
+		return res.status(400).send(false);
+	}
+	// Check if the mobile number has the correct number of characters
+	else if (req.body.mobileNo.length !== 11){
+		return res.status(400).send(false);
+	}
+	// Checks if the password has atleast 8 characters
+	else if (req.body.password.length < 8){
+		return res.status(400).send(false);
+	} else {
+		let newUser = new User({
+			firstName : req.body.firstName,
+			lastName : req.body.lastName,
+			email : req.body.email,
+			mobileNo : req.body.mobileNo,
+			password : bcrypt.hashSync(req.body.password, 10)
+		})
 
-	return newUser.save()
-	.then((result) => res.status(201).send(result))
-	.catch(err => res.status(500).send(err));
+		return newUser.save()
+		.then((result) => res.status(201).send(result))
+		.catch(err => res.status(500).send(err));
+	}
 };
 /*
 	IMPORTANT NOTE: 
@@ -70,38 +96,42 @@ module.exports.registerUser = (req,res) => {
 module.exports.loginUser = (req, res) => {
 	// The "findOne" method returns the first record in the collection that matches the search criteria
 	// We use the "findOne" method instead of the "find" method which returns all records that match the search criteria
-	return User.findOne({ email : req.body.email })
-	.then(result => {
+	if(req.body.email.includes("@")){
+		return User.findOne({ email : req.body.email })
+		.then(result => {
 
-		// User does not exist
-		if(result == null){
-			return res.status(404).send(false);
+			// User does not exist
+			if(result == null){
+				return res.status(404).send(false);
 
-		// User exists
-		} else {
-
-			// Creates the variable "isPasswordCorrect" to return the result of comparing the login form password and the database password
-			// The "compareSync" method is used to compare a non encrypted password from the login form to the encrypted password retrieved from the database and returns "true" or "false" value depending on the result
-			// A good coding practice for boolean variable/constants is to use the word "is" or "are" at the beginning in the form of is+Noun
-				//example. isSingle, isDone, isAdmin, areDone, etc..
-			const isPasswordCorrect = bcrypt.compareSync(req.body.password, result.password);
-
-			if (isPasswordCorrect){
-
-				// Generate an access token
-				// Uses the "createAccessToken" method defined in the "auth.js" file
-				// Returning an object back to the client application is common practice to ensure information is properly labeled and real world examples normally return more complex information represented by objects
-				return res.status(200).send({ access : auth.createAccessToken(result) });
-
-			// Passwords do not match
+			// User exists
 			} else {
 
-				return res.status(401).send(false);
+				// Creates the variable "isPasswordCorrect" to return the result of comparing the login form password and the database password
+				// The "compareSync" method is used to compare a non encrypted password from the login form to the encrypted password retrieved from the database and returns "true" or "false" value depending on the result
+				// A good coding practice for boolean variable/constants is to use the word "is" or "are" at the beginning in the form of is+Noun
+					//example. isSingle, isDone, isAdmin, areDone, etc..
+				const isPasswordCorrect = bcrypt.compareSync(req.body.password, result.password);
+
+				if (isPasswordCorrect){
+
+					// Generate an access token
+					// Uses the "createAccessToken" method defined in the "auth.js" file
+					// Returning an object back to the client application is common practice to ensure information is properly labeled and real world examples normally return more complex information represented by objects
+					return res.status(200).send({ access : auth.createAccessToken(result) });
+
+				// Passwords do not match
+				} else {
+
+					return res.status(401).send(false);
+				}
 			}
-		}
-	})
-	.catch(err => res.status(500).send(err));
-};
+		})
+		.catch(err => res.status(500).send(err));
+	  } else {
+	  		return res.status(400).send(false)
+	  }
+  };
 /*
 	IMPORTANT NOTE: 
 		-unlike register, sending 200 is more appropriate upon succesful logging in since we're just looking for a document in the database and match it with the credentials sent from the request body.

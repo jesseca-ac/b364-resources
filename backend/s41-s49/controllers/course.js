@@ -1,6 +1,6 @@
 //[SECTION] Dependencies and Modules
 const Course = require("../models/Course");
-
+const User = require("../models/User");
 
 // [SECTION] Create a course
 
@@ -13,16 +13,44 @@ module.exports.addCourse = (req, res) => {
 
 	// Creates a variable "newCourse" and instantiates a new "Course" object using the mongoose model
 	// Uses the information from the request body to provide all the necessary information
-	let newCourse = new Course({
+	const newCourse = new Course({
 		name : req.body.name,
 		description : req.body.description,
 		price : req.body.price
 	});
 
-	// Saves the created object to our database
-	return newCourse.save()
-	.then(result => res.status(201).send(result))
-	.catch(err => res.status(500).send(err));
+	Course.findOne({ name: req.body.name })
+	.then(existingCourse => {
+		if (existingCourse){
+			// Sent { message: 'Course already exists' }
+			// Notice that we didn't response directly in string, instead we added an object with a value of a string. This is a proper response from API to Client. Direct string will only cause an error when connecting it to your frontend.
+			// using res.send({ key: value }) is a common and appropriate way to structure a response from an API to the client. This approach allows you to send structured data back to the client in the form of a JSON object, where "key" represents a specific piece of data or a property, and "value" is the corresponding value associated with that key.
+			return res.status(409).send({ error: 'Course already exists' })
+		}
+
+		return newCourse.save()
+		.then(savedCourse => {
+			//The syntax ({ savedCourse }) in JavaScript is known as object destructuring assignment. In this context, it's used to create a new object with a property named savedCourse that holds the value of the savedCourse variable.
+			return res.status(201).send({ savedCourse })
+		})
+		// Used more descriptive variable names like saveErr and findErr for better understanding of the error context.
+
+		// Sent more meaningful error messages like 'Failed to save the course' and 'Error finding the course' to provide clearer feedback.
+		.catch(saveErr => {
+			// This will only be displayed in terminal
+			console.error("Error in saving the course: ", saveErr)
+
+			// This will be the response to the clientt
+			return res.status(500).send({ error: 'Failed to save the course'})
+		})
+	})
+	.catch(findErr => {
+		// This will only be displayed in terminal
+		console.error("Error in finding the course: ", findErr)
+
+
+		return res.status(500).send({ message: 'Error finding the course'})
+	})	
 }; 
 
 // [SECTION] Use of Promise.catch()
@@ -88,10 +116,17 @@ module.exports.getAllCourses = (req, res) => {
 */
 module.exports.getAllActive = (req, res) => {
 
-	Course.find({ isActive: true })
-	.then(result => res.status(200).send(result))
-	.catch(err => res.status(500).send(err));
-
+	Course.find({ isActive: true }).then(result => {
+		// if the result is not null
+		if (result.length > 0){
+			// send the result as a response
+			return res.status(200).send(result);
+		}
+		// if there are no results found
+		else {
+			return res.status(200).send(false)
+		}
+	}).catch(err => res.status(500).send(err));
 };
 
 //[SECTION] Retrieve a specific course
@@ -164,16 +199,20 @@ module.exports.archiveCourse = (req, res) => {
     let updateActiveField = {
         isActive: false
     }
-
-    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
-    .then(course => {
-        if (course) {
-            res.status(200).send(true);
-        } else {
-            res.status(400).send(false);
-        }
-    })
-    .catch(err => res.status(500).send(err));
+    if (req.user.isAdmin == true){
+	    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
+	    .then(course => {
+	        if (course) {
+	            res.status(200).send(true);
+	        } else {
+	            res.status(400).send(false);
+	        }
+	    })
+	    .catch(err => res.status(500).send(err));
+	    }
+	    else{
+	    	return res.status(403).send(false);
+	    }
 };
 
 /*
@@ -194,19 +233,24 @@ Important Note:
 	4. If a course is updated send a response of "true" else send "false"
 	5. Use the "then" method to send a response back to the client appliction based on the result of the "findByIdAndUpdate" method
 */
+
 module.exports.activateCourse = (req, res) => {
 
     let updateActiveField = {
         isActive: true
     }
-    
-    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
-    .then(course => {
-        if (course) {
-            res.status(200).send(true);
-        } else {
-            res.status(400).send(false);
-        }
-    })
-    .catch(err => res.status(500).send(err));
+    if (req.user.isAdmin == true){
+        return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
+        .then(course => {
+            if (course) {
+                res.status(200).send(true);
+            } else {
+                res.status(400).send(false);
+            }
+        })
+        .catch(err => res.status(500).send(err));
+    }
+    else{
+        return res.status(403).send(false);
+    }
 };
