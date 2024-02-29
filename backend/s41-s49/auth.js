@@ -93,3 +93,12 @@ if(req.user.isAdmin){
 	console.log("result from verifyAdmin method");
 	console.log(req.user);
 }
+
+// [SECTION] A middleware that checks if the user was successfully authenticated via passport using the Google API
+module.exports.isLoggedIn = (req, res, next) => {
+	if (req.user) {
+		next();
+	} else {
+		res.sendStatus(401);
+	}
+}

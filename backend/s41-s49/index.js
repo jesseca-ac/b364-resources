@@ -1,6 +1,14 @@
 // [SECTION] Dependencies and Modules
+require('dotenv').config()
 const express = require("express");
 const mongoose = require("mongoose");
+// Google Login
+// Imports the passport package
+const passport = require('passport');
+// Package for creating a middleware for sessions
+const session = require('express-session');
+// Imports the "passport.js file" 
+require('./passport');
 // Allows our backend app to be available to our frontend app
 // Allows us to control the app's Cross Origin Resource Sharing settings
 const cors = require("cors");
@@ -21,6 +29,20 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 // Allows all resources to access our backend application
 app.use(cors());
+
+// [SECTION] Google Login
+// Creates a session with the given data
+// resave prevents the session from overwriting the secret while the session is active
+// saveUninitialized prevents the data from storing data in the session while the data has not yet been initialized
+app.use(session({
+	secret: process.env.clientSecret,
+	resave: false,
+	saveUninitialized: false
+}));
+// Initializes the passport package when the application runs
+app.use(passport.initialize());
+// Creates a session using the passport package
+app.use(passport.session())
 
 
 // [SECTION] Database connection
