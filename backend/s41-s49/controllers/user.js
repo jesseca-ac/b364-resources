@@ -13,27 +13,30 @@ const auth = require("../auth");
 */
 
 module.exports.checkEmailExists = (req,res) => {
-	if(req.body.email.includes("@")){
+// validations can be done in either routes or controllers, however, we must be careful in placing our validations in the controllers for it may return data other than a Promise (e.g. primitive data types) which cannot be caught by the routes.
+	// validation if the request body sent has the "@" symbol.
+	if (req.body.email.includes("@")){
 		return User.find({ email : req.body.email })
 		.then(result => {
-
-		// The "find" method returns a record if a match is found
+			// The "find" method returns a record if a match is found
 			if (result.length > 0) {
-
-				// If there is a duplicate email, send true with 409 http status
-				return res.status(409).send({ error: "Duplicate Email Found"});
+				return res.status(409).send({ error: "Duplicate Email Found" });
 			// No duplicate email found
 			// The user is not yet registered in the database
 			} else {
 
-				//if there is no duplicate email, send false with 404 http status 
-				res.status(404).send({ message: "Email not found"})
-			}
+				// If there is no duplicate email, send false with 204 http status back to the client
+				return res.status(404).send({ message: "Email not found" });
+			};
 		})
-		.catch(err => res.send(err))
+		.catch(err => {
+			console.error("Error in find", err)
+
+			return res.status(500).send({ error: "Error in find"});
+		});
 	} else {
-		res.status(400).send({ error: "Invalid Email"})
-	}
+	    res.status(400).send({ error: "Invalid Email"})
+	};
 }
 /*
 	IMPORTANT NOTE
@@ -53,18 +56,22 @@ module.exports.checkEmailExists = (req,res) => {
 		3. Save the new User to the database
 */
 module.exports.registerUser = (req,res) => {
-	// Check if the email is in the right format
+	// checks if the email is in the right format
 	if (!req.body.email.includes("@")){
-		return res.status(400).send(false);
+		return res.status(400).send({ error: "Email invalid" });
 	}
-	// Check if the mobile number has the correct number of characters
+	// checks if the mobile number has the correct number of characters
 	else if (req.body.mobileNo.length !== 11){
-		return res.status(400).send(false);
+		return res.status(400).send({ error: "Mobile number invalid" });
 	}
-	// Checks if the password has atleast 8 characters
-	else if (req.body.password.length < 8){
-		return res.status(400).send(false);
-	} else {
+	// checks if the password has atleast 8 characters
+	else if (req.body.password.length < 8) {
+		return res.status(400).send({ error: "Password must be atleast 8 characters" });
+	}
+	// if all needed formats are achieved
+	else {
+		// Creates a variable "newUser" and instantiates a new "User" object using the mongoose model
+		// Uses the information from the request body to provide all the necessary information
 		let newUser = new User({
 			firstName : req.body.firstName,
 			lastName : req.body.lastName,
@@ -72,10 +79,15 @@ module.exports.registerUser = (req,res) => {
 			mobileNo : req.body.mobileNo,
 			password : bcrypt.hashSync(req.body.password, 10)
 		})
-
-		return newUser.save()
-		.then((result) => res.status(201).send(result))
-		.catch(err => res.status(500).send(err));
+		// Saves the created object to our database
+		// Then, return result to the handler function. No return keyword used because we're using arrow function's implicit return feature
+		// catch the error and return to the handler function. No return keyword used because we're using arrow function's implicit return feature
+		newUser.save()
+		.then((user) => res.status(201).send({ message: "Registered Successfully" }))
+		.catch(err => {
+			console.error("Error in saving: ", err)
+			return res.status(500).send({ error: "Error in save"})
+		})
 	}
 };
 /*
@@ -97,14 +109,12 @@ module.exports.loginUser = (req, res) => {
 	// The "findOne" method returns the first record in the collection that matches the search criteria
 	// We use the "findOne" method instead of the "find" method which returns all records that match the search criteria
 	if(req.body.email.includes("@")){
-		return User.findOne({ email : req.body.email })
+		User.findOne({ email : req.body.email })
 		.then(result => {
-
-			// User does not exist
+			// if the email is not found in the database
 			if(result == null){
-				return res.status(404).send(false);
-
-			// User exists
+				// send the message to the user
+				return res.status(404).send({ error: "No Email Found" });
 			} else {
 
 				// Creates the variable "isPasswordCorrect" to return the result of comparing the login form password and the database password
@@ -113,25 +123,29 @@ module.exports.loginUser = (req, res) => {
 					//example. isSingle, isDone, isAdmin, areDone, etc..
 				const isPasswordCorrect = bcrypt.compareSync(req.body.password, result.password);
 
-				if (isPasswordCorrect){
+				// If the passwords match/result of the above code is true
+				if (isPasswordCorrect) {
 
 					// Generate an access token
 					// Uses the "createAccessToken" method defined in the "auth.js" file
 					// Returning an object back to the client application is common practice to ensure information is properly labeled and real world examples normally return more complex information represented by objects
-					return res.status(200).send({ access : auth.createAccessToken(result) });
+					return res.status(200).send({ access : auth.createAccessToken(result)})
 
 				// Passwords do not match
 				} else {
-
-					return res.status(401).send(false);
+					return res.status(401).send({ message: "Email and password do not match" });
 				}
 			}
 		})
-		.catch(err => res.status(500).send(err));
-	  } else {
-	  		return res.status(400).send(false)
-	  }
-  };
+		.catch(err => {
+			console.error("Error in find: ", err)
+			return res.status(500).send({ error: "Error in find"})
+		})
+		}
+		else {
+			return res.status(400).send({error: "Invalid Email"})
+		}
+};
 /*
 	IMPORTANT NOTE: 
 		-unlike register, sending 200 is more appropriate upon succesful logging in since we're just looking for a document in the database and match it with the credentials sent from the request body.
@@ -146,18 +160,29 @@ module.exports.loginUser = (req, res) => {
 	2. Change the password to an empty string to hide the password
 	3. Return the updated user record
 */
+//[SECTION] Retrieve user details
+// The "getProfile" method now has access to the "req" and "res" objects because of the "next" function in the "verify" method.
 module.exports.getProfile = (req, res) => {
+    const userId = req.user.id;
 
-	// The "return" keyword ensures the end of the getProfile method.
-	// Since getProfile is now used as a middleware it should have access to "req.user" if the "verify" method is used before it.
+    // / The "return" keyword ensures the end of the getProfile method.
+	// // Since getProfile is now used as a middleware it should have access to "req.user" if the "verify" method is used before it.
 	// Order of middlewares is important. This is because the "getProfile" method is the "next" function to the "verify" method, it receives the updated request with the user id from it.
-	return User.findById(req.user.id)
-	.then(user => {
-		console.log(user)
-		user.password = "";
-		return res.status(200).send(user);
-	})
-	.catch(err => res.status(500).send(err))
+    User.findById(userId)
+    .then(user => {
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        // Exclude sensitive information like password
+        user.password = undefined;
+
+        return res.status(200).send({ user });
+    })
+    .catch(err => {
+    	console.error("Error in fetching user profile", err)
+    	return res.status(500).send({ error: 'Failed to fetch user profile' })
+    });
 };
 /*
 	IMPORTANT NOTE:
@@ -184,42 +209,47 @@ Important Note
 */
 // [SECTION] For Enrolling A user
 module.exports.enroll = (req, res) => {
-	// The user's id from the decoded token after verify()
-	console.log(req.user.id);
-	// The course from our request body
-	console.log(req.body.enrolledCourses)
 
+	console.log(req.user.id) //the user's id from the decoded token after verify()
+	console.log(req.body.enrolledCourses) //the course from our request body
+
+	//process stops here and sends response IF user is an admin
 	if(req.user.isAdmin){
-		// Admins should not be allowed to enroll to a course, so we need the "verify" tp che the req.user.isAdmin
-		return res.status(403).send(false);
+		return res.status(403).send({ error: "Admin is forbidden" });
 	}
 
 	let newEnrollment = new Enrollment ({
-		// Adds the id of the logged in user from the decoded token
-		userId : req.user.id,	
-		// Gets the courseIds from the request body
+		 // Adds the id of the logged in user from the decoded token
+		userId : req.user.id,
+		// gets the courseId from the request body
 		enrolledCourses: req.body.enrolledCourses,
 		totalPrice: req.body.totalPrice
 	})
-
+	
 	return newEnrollment.save()
 	.then(enrolled => {
-		console.log(enrolled)
-		return res.status(201).send(true);
+		return res.status(201).send({ 
+				message: "Successfully Enrolled",
+				enrolled: enrolled
+		 });
 	})
-	.catch(err => res.status(500).send(err))
+	.catch(err => {
+		console.error("Error in enrolling: ", err)
+		return res.status(500).send({ error: "Error in enrolling" })
+	})
 }
 
 // [SECTION] Getting All Enrollements
 module.exports.getEnrollments = (req, res) => {
-	return Enrollment.find({userId : req.user.id})
+return Enrollment.find({userId : req.user.id})
 	.then(enrollments => {
-		if (enrollments.length > 0) {
-			return res.status(200).send(enrollments);
-
-		} else
-		
-		 return res.status(404).send(false)
+		if (!enrollments) {
+			return res.status(404).send({ error: 'No enrollments not found' });
+		}
+		return res.status(200).send({ enrollments });
 	})
-	.catch(err => res.status(500).send(err));
-}
+	.catch(err => {
+		console.error("Error in fetching enrollments")
+		return res.status(500).send({ error: 'Failed to fetch enrollments' })
+	});
+};

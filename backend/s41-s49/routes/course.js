@@ -12,6 +12,7 @@ const {verify, verifyAdmin} = auth;
 //[SECTION] Route for creating a course
 router.post("/", verify, verifyAdmin, courseController.addCourse); 
 
+// [SECTION] Gett all courses
 router.get("/all", verify, verifyAdmin, courseController.getAllCourses);
 
 //[SECTION] Route for retrieving all courses

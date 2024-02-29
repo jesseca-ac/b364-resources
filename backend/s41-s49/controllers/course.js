@@ -53,6 +53,15 @@ module.exports.addCourse = (req, res) => {
 	})	
 }; 
 
+
+/*
+	IMPORTANT NOTES:
+	- The updated code provides a more structures and reliable approach to handling adding a course in the API.
+		- Handling error cases: Added appropriate error handling for various scenarios, returning meaningful error responses with appropriate HTTP status codes.
+		- Response: Changed the response for a successful course creation to HTTP status code 201 (Created) and sending the saved course in the response body.
+		- Consistent Error Messages: Provided consistent error messages to indicate the nature of the error. 
+*/
+
 // [SECTION] Use of Promise.catch()
 /*
 	- Promise-based methods returns "promises" which can be chained with a .catch() method handle any errors that occur during execution.
@@ -100,12 +109,30 @@ module.exports.addCourse = (req, res) => {
 
 // In asynchronous operations like the one using promises, you typically don't need to use a try block. Instead, you can handle errors using the .catch() method after the promise (.then()). In this case, if any error occurs during the promise execution, it will be caught and handled by the .catch() block, sending the error response back.
 
+// module.exports.getAllCourses = (req, res) => {
+
+// 	return Course.find({})
+// 	.then(result => res.status(200).send(result))
+// 	.catch(err => res.status(500).send(err));
+
+// };
+
+
 module.exports.getAllCourses = (req, res) => {
-
-	return Course.find({})
-	.then(result => res.status(200).send(result))
-	.catch(err => res.status(500).send(err));
-
+	 return Course.find({})
+	.then(courses => {
+		// Updated to use proper conditional checks (result.length > 0) to handle cases where there are no courses.
+		if(courses.length > 0) {
+			// Provided a more structured response format using an object with a key allCourses containing the courses.
+			return res.status(200).send({ courses })
+		} else {
+			return res.status(200).send({ message: ' No courses found. '})
+		}
+	})
+	.catch(err => {
+		console.error("Error in finding all courses: ", err)
+		return res.status(500).send({ error: 'Error finding courses.' })
+	});
 };
 
 //[SECTION] Retrieve all active courses
@@ -116,17 +143,20 @@ module.exports.getAllCourses = (req, res) => {
 */
 module.exports.getAllActive = (req, res) => {
 
-	Course.find({ isActive: true }).then(result => {
+	Course.find({ isActive: true }).then(courses => {
 		// if the result is not null
-		if (result.length > 0){
+		if (courses.length > 0){
 			// send the result as a response
-			return res.status(200).send(result);
+			return res.status(200).send({ courses });
 		}
 		// if there are no results found
 		else {
-			return res.status(200).send(false)
+			return res.status(200).send({ message: 'No active courses found.' })
 		}
-	}).catch(err => res.status(500).send(err));
+	}).catch(err => {
+		console.error("Error in finding active courses: ", err)
+		return res.status(500).send({ error: 'Error finding active courses.' })
+	})
 };
 
 //[SECTION] Retrieve a specific course
@@ -142,11 +172,19 @@ module.exports.getAllActive = (req, res) => {
 
 */
 module.exports.getCourse = (req, res) => {
+	const courseId = req.params.courseId;
 
-	Course.findById(req.params.courseId)
-	.then(course => res.status(200).send(course))
-	.catch(err => res.status(500).send(err));
-	
+	Course.findById(courseId)
+	.then(course => {
+		if (!course) {
+			return res.status(404).send({ error: 'Course not found' });
+		}
+		return res.status(200).send({ course });
+	})
+	.catch(err => {
+		console.error("Error in fetching the course: ", err)
+		return res.status(500).send({ error: 'Failed to fetch course' });
+	})
 };
 
 	//[SECTION] Update a course
@@ -156,7 +194,7 @@ module.exports.getCourse = (req, res) => {
     	2. Retrieve and update a course using the mongoose "findByIdAndUpdate" method, passing the ID of the record to be updated as the first argument and an object containing the updates to the course
     	3. Use the "then" method to send a response back to the client appliction based on the result of the "find" method
     */
-module.exports.updateCourse = (req, res)=>{
+module.exports.updateCourse = (req, res) => {
 
 	let updatedCourse = {
         name: req.body.name,
@@ -170,16 +208,26 @@ module.exports.updateCourse = (req, res)=>{
     // req.params.courseId - the id used as the reference to find the document in the db retrieved from the url
     // updatedCourse - the updates to be made in the document
     return Course.findByIdAndUpdate(req.params.courseId, updatedCourse)
-    .then(course => {
-        if (course) {
-            res.status(200).send(true);
-        } else {
-            res.status(404).send(false);
-        }
-    })
-    .catch(err => res.status(500).send(err));
-};
+    .then(updatedCourse => {
+        if (!updatedCourse) {
 
+            //Added specific error handling for cases where the course is not found (404 Not Found) and for other potential errors (500 Internal Server Error).
+            return res.status(404).send({ error: 'Course not found' });
+
+        }
+
+        // Modified the response to include the updated course when the operation is successful.
+        return res.status(200).send({ 
+        	message: 'Course updated successfully', 
+        	updatedCourse: updatedCourse 
+        });
+
+    })
+    .catch(err => {
+		console.error("Error in updating a course: ", err)
+		return res.status(500).send({ error: 'Error in updating a course.' });
+	});
+};
 /*
 Important Note:
 	- While incorporating a try-catch block for handling synchronous errors is a good practice, it might not be necessary or effective in this specific case because the main operations within the function are asynchronous (e.g., findByIdAndUpdate which returns a promise).
@@ -199,20 +247,22 @@ module.exports.archiveCourse = (req, res) => {
     let updateActiveField = {
         isActive: false
     }
-    if (req.user.isAdmin == true){
-	    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
-	    .then(course => {
-	        if (course) {
-	            res.status(200).send(true);
-	        } else {
-	            res.status(400).send(false);
-	        }
-	    })
-	    .catch(err => res.status(500).send(err));
-	    }
-	    else{
-	    	return res.status(403).send(false);
-	    }
+    
+    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
+    .then(archiveCourse => {
+        if (!archiveCourse) {
+        	return res.status(404).send({ error: 'Course not found' });
+        }
+        return res.status(200).send({ 
+        	message: 'Course archived successfully', 
+        	archiveCourse: archiveCourse 
+        });
+    })
+    .catch(err => {
+    	console.error("Error in archiving a course: ", err)
+    	return res.status(500).send({ error: 'Failed to archive course' })
+    });
+
 };
 
 /*
@@ -239,18 +289,19 @@ module.exports.activateCourse = (req, res) => {
     let updateActiveField = {
         isActive: true
     }
-    if (req.user.isAdmin == true){
-        return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
-        .then(course => {
-            if (course) {
-                res.status(200).send(true);
-            } else {
-                res.status(400).send(false);
-            }
-        })
-        .catch(err => res.status(500).send(err));
-    }
-    else{
-        return res.status(403).send(false);
-    }
+    
+    return Course.findByIdAndUpdate(req.params.courseId, updateActiveField)
+    .then(activateCourse => {
+        if (!activateCourse) {
+        	return res.status(404).send({ error: 'Course not found' });
+        }
+        return res.status(200).send({ 
+        	message: 'Course activated successfully', 
+        	activateCourse: activateCourse
+        });
+    })
+    .catch(err => {
+    	console.error("Error in activating a course: ", err)
+    	return res.status(500).send({ error: 'Failed to activating a course' })
+    });
 };
