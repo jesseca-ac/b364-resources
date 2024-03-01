@@ -305,3 +305,47 @@ module.exports.activateCourse = (req, res) => {
     	return res.status(500).send({ error: 'Failed to activating a course' })
     });
 };
+
+// Controller action to search for courses by course name
+module.exports.searchCoursesByName = async (req, res) => {
+  try {
+    const { courseName } = req.body;
+
+    // Use a regular expression to perform a case-insensitive search
+    const courses = await Course.find({
+      name: { $regex: courseName, $options: 'i' }
+    });
+
+    res.json(courses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// [SECTION] Getting emails of Enrolled users.
+// module.exports.getEmailsOfEnrolledUsers = async (req, res) => {
+// 	const courseId = req.params.courseId; // Use req.params instead of req.body
+
+// 	try {
+// 		// Find the course by courseId
+// 		const course = await Course.findById(courseId);
+	
+// 		if (!course) {
+// 			return res.status(404).json({ message: 'Course not found' });
+// 		}
+	
+// 		// Get the userIds of enrolled users from the course
+// 		const userIds = course.enrollees.map(enrollee => enrollee.userId);
+	
+// 		// Find the users with matching userIds
+// 		const enrolledUsers = await User.find({ _id: { $in: userIds } }); // Use userIds variable instead of undefined "users"
+	
+// 		// Extract the emails from the enrolled users
+// 		const emails = enrolledUsers.map(user => user.email); // Use map instead of forEach
+	
+// 		res.status(200).json({ userEmails: emails }); // Use the correct variable name userEmails instead of emails
+// 	} catch (error) {
+// 		res.status(500).json({ message: 'An error occurred while retrieving enrolled users' });
+// 	}
+// };

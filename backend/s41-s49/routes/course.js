@@ -34,6 +34,12 @@ router.patch("/:courseId/archive", verify, verifyAdmin, courseController.archive
 //[SECTION] Route to activating a course (Admin)
 router.patch("/:courseId/activate", verify, verifyAdmin, courseController.activateCourse);
 
+// [SECTION] Route to search for a course
+router.post('/search', courseController.searchCoursesByName);
+
+// [SECTION] Route to get the emails of enrolled users
+// router.get('/:courseId/enrolled-users', courseController.getEmailsOfEnrolledUsers);
+
 
 //[SECTION] Export Route System
 // Allows us to export the "router" object that will be accessed in our "index.js" file

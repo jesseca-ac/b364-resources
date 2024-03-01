@@ -36,6 +36,16 @@ router.post('/enroll', verify, userController.enroll)
 // [SECTION] Route to get the user's enrollments array
 router.get('/getEnrollments', verify, userController.getEnrollments);
 
+
+// [SECTION]POST route for resetting the password
+router.post('/reset-password', verify, userController.resetPassword);
+
+// [SECTION]Update user profile route
+router.put('/profile', verify, userController.updateProfile);
+
+
+
+
 // [SECTION] Google Login
 // [SECTION] Route for initiating the Google OAuth consent screen
 router.get('/google', 
@@ -91,4 +101,6 @@ router.get("/logout", (req, res) => {
 		}
 	})
 })
+
+
 module.exports = router;

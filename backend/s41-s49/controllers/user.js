@@ -253,3 +253,46 @@ return Enrollment.find({userId : req.user.id})
 		return res.status(500).send({ error: 'Failed to fetch enrollments' })
 	});
 };
+
+//[SECTION] Function to reset the password
+module.exports.resetPassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    const { id } = req.user; // Extracting user ID from the authorization header
+
+    // Hashing the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Updating the user's password in the database
+    await User.findByIdAndUpdate(id, { password: hashedPassword });
+
+    // Sending a success response
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// Controller function to update the user profile
+module.exports.updateProfile = async (req, res) => {
+  try {
+    // Get the user ID from the authenticated token
+    const userId = req.user.id;
+
+    // Retrieve the updated profile information from the request body
+    const { firstName, lastName, mobileNo } = req.body;
+
+    // Update the user's profile in the database
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, mobileNo },
+      { new: true }
+    );
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Failed to update profile' });
+  }
+}
