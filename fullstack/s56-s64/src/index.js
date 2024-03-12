@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css'
+
+
 /*
   IMPORTANT NOTE:
     - The "import" statement allows us to use the code/exported modules from other files similar to how we use the "require" function in node/express Js.
@@ -20,6 +22,13 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+/*
+  IMPORTANTE NOTE: 
+    - In React JS, normally a single component is rendered in the "index.js" file which is our entry point or the main file that the application uses for creating our ui.
+    - All other components are applied to this single component instead.
+    -JSX syntax requires that components should always have closing tags.
+*/
 
 // const name = 'John Smith';
 // const user = {
