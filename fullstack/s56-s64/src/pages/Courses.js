@@ -3,7 +3,7 @@ import coursesData from '../data/coursesData';
 
 
 export default function Courses() {
-	console.log(coursesData[0]);
+	// console.log(coursesData[0]);
 	/* 
 		- The "course" in the courseCard component is called a "prop"
 		which is a shorthand for "property".
