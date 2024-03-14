@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 export default function CourseCard({courseProp}) {
     const {name, description, price} = courseProp;
@@ -9,6 +9,7 @@ export default function CourseCard({courseProp}) {
     // Syntax
         // const [getter, setter] = useState(initialGetterValue);
     const [count, setCount] = useState(0);
+    const [seats, setSeats] = useState(10);
     // Using the state hook returns an array with the first element being a value and the second element as a function that's used to change the value of the first element
     console.log(useState(0));
 
@@ -18,8 +19,14 @@ export default function CourseCard({courseProp}) {
     // The setter function for useStates are asynchronous allowing it to execute separately from other codes in the program
     // The "setCount" function is being executed while the "console.log" is already completed resulting in the value to be displayed in the console to be behind by one count.
     function enroll(){
-        setCount(count + 1);
-        console.log('Enrollees: ' + count);
+        if (seats > 0) {
+            setCount(count + 1);
+            console.log('Enrollees: ' + count);
+            setSeats(seats - 1);
+            console.log('Seats: ' + seats)
+        } else {
+            alert("No more seats available");
+        };
     }
 
     // Checks to see if the data was successfully passed
@@ -35,16 +42,17 @@ export default function CourseCard({courseProp}) {
                 <Card.Text>{description}</Card.Text>
                 <Card.Subtitle>Price:</Card.Subtitle>
                 <Card.Text>{price}</Card.Text>
+                <Card.Text>Seats: {seats}</Card.Text>
                 <Button className="bg-primary" onClick={enroll}>Enroll</Button>
             </Card.Body>
         </Card>
     )
 }
 
-CourseCard.propTypes = {
-    course: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired
-    })
-}
+// CourseCard.propTypes = {
+//     course: PropTypes.shape({
+//         name: PropTypes.string.isRequired,
+//         description: PropTypes.string.isRequired,
+//         price: PropTypes.number.isRequired
+//     })
+// }

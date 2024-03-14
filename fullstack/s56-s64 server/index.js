@@ -18,7 +18,7 @@
 
 
 //[SECTION] Database Connection 
-	mongoose.connect("mongodb+srv://admin:admin1234@cluster0.zlyew.mongodb.net/bookingAPI?retryWrites=true&w=majority", {
+	mongoose.connect("mongodb+srv://andreivon:admin1234@cluster0.qwsgp7m.mongodb.net/Full-stack?retryWrites=true&w=majority&appName=Cluster0", {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	});
