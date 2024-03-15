@@ -26,13 +26,53 @@ export default function Register() {
 
 		fetch('http://localhost:4000/users/register', {
 
-		method:
+		method: 'POST',
 		headers: {
-
+			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({
-			
+
+			firstName: firstName,
+			lastName: lastName,
+			email: email,
+			mobileNo: mobileNo,
+			password: password
+
 		})
+		})
+		.then(res => res.json())
+		.then(data => {
+
+		console.log(data);
+
+		if(data.message === "Registered Successfully"){
+
+			setFirstName('');
+			setLastName('');
+			setEmail('');
+			setMobileNo('');
+			setPassword('');
+			setConfirmPassword('');
+
+			alert("Registration successful")
+
+		} else if (data.error === "Email invalid") {
+
+			alert("Email is invalid")
+
+		} else if (data.error === "Mobile number invalid") {
+
+			alert("Mobile number is invalid");
+
+		} else if (data.error === "Password must be atleast 8 characters") {
+
+			alert("Password must be at least 8 characters");
+
+		} else {
+
+			alert("Something went wrong.")
+		}
+
 		})
 	}
 
@@ -61,7 +101,7 @@ export default function Register() {
 
 	return (
 
-		<Form>
+		<Form onSubmit={(e) => registerUser(e)}>
 		<h1 className="my-5 text-center">Register</h1>
 			<Form.Group>
 				<Form.Label>First Name:</Form.Label>
