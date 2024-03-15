@@ -32,6 +32,12 @@ export default function Login() {
 		.then(data => {
 
 			if(data.access){
+
+				// Set the email of the authenticated user in the local storage
+				// Syntax
+				// localStorage.setItem('propertyName', value)
+				localStorage.setItem('token', data.access);
+
 			console.log('Token:', data.access);
 				alert(`Thank you for logging in`);
 			
@@ -101,3 +107,7 @@ export default function Login() {
 	        </Form>       
     )
 }
+
+// You may check the stored token under the dev tools > Appliocations> Local Storage 
+// Check if the key value was saved
+// The "localStorage.setItem" allows us to manipulate the browser's localStorage property to store information indefinitely to help demonstrate conditional rendering and the login and logout features.

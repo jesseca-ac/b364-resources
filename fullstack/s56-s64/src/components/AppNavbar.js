@@ -1,24 +1,45 @@
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-
+import { Link, NavLink } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function AppNavbar() {
+	// State to store the user information stored in the login page.
+	const [user, setUser] = useState(localStorage.getItem("token"));
+	console.log(user); 
+	// Checking if we received the login token
+
 	return (
 			<Navbar bg="light" expand="lg">
 			    <Container fluid>
-			        <Navbar.Brand href="#home">Zuitt Booking</Navbar.Brand>
+			        <Navbar.Brand as={Link} to="/">Zuitt Booking</Navbar.Brand>
 			        <Navbar.Toggle aria-controls="basic-navbar-nav"/>
 			        <Navbar.Collapse id="basic-navbar-nav">
 			            <Nav className="ms-auto">
-			            <Nav.Link href="#home">Home</Nav.Link>
-			            <Nav.Link href="#link">Courses</Nav.Link>
+				            <Nav.Link as={NavLink} to="/" exact="true">Home</Nav.Link>
+				            <Nav.Link as={NavLink} to="/courses" exact="true">Courses</Nav.Link>
+				            {(user !== null) ?
+				            	<Nav.Link as={NavLink} to="/logout" exact="true">Logout</Nav.Link>
+				            :
+				            <>
+					            <Nav.Link as={NavLink} to="/login" exact="true">Login</Nav.Link>
+					            <Nav.Link as={NavLink} to="/register" exact="true">Register</Nav.Link>
+				            </>
+				            }
 			            </Nav>
 			        </Navbar.Collapse>
 			    </Container>
 			</Navbar>
 		)
 }
+
+/*
+	IMPORTANT NOTE: 
+		- The "as" prop allows components to be treated as if they are a different component that would gain access to it's properties and functionalities.
+		- The "to" prop is used in place of the "href" prop for providing the URL for the page/redirection.
+		- The "exact" prop is used to highlight the active NavLink component that would match the corresponding URL.
+*/
 
 /*
 	IMPORTANT NOTE: 
