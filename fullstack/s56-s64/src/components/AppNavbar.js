@@ -2,11 +2,12 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { Link, NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import UserContext from '../UserContext';
 
 export default function AppNavbar() {
 	// State to store the user information stored in the login page.
-	const [user, setUser] = useState(localStorage.getItem("token"));
+	const { user } = useContext(UserContext);
 	console.log(user); 
 	// Checking if we received the login token
 
@@ -19,7 +20,7 @@ export default function AppNavbar() {
 			            <Nav className="ms-auto">
 				            <Nav.Link as={NavLink} to="/" exact="true">Home</Nav.Link>
 				            <Nav.Link as={NavLink} to="/courses" exact="true">Courses</Nav.Link>
-				            {(user !== null) ?
+				            {(user.access !== null) ?
 				            	<Nav.Link as={NavLink} to="/logout" exact="true">Logout</Nav.Link>
 				            :
 				            <>

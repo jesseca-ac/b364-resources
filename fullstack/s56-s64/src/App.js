@@ -11,6 +11,8 @@ import Error from './pages/Error';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
+import { useState } from 'react';
+import { UserProvider } from './UserContext';
 
 /*
   - React JS is a single page application (SPA)
@@ -24,22 +26,43 @@ import { Route, Routes } from 'react-router-dom';
 */
 
 function App() {
+
+  // State hook for the user state that's defined here for a global scope
+  // Initialized as an object with properties from the localStorage
+  // This will be used to store the user information and will be used for validating if a user is logged in on the app or not
+  const [user, setUser] = useState({
+    token: localStorage.getItem('token')
+  })
+
+  // Function for clearing localStorage on logout
+  const unsetUser = () => {
+    localStorage.clear();
+  }
+
+
   return (
-    <Router>
-        <Container fluid>
-            <AppNavbar/>
-            <Routes>
-                <Route path="/" element={<Home/>} />
-                <Route path="/courses" element={<Courses/>} />
-                <Route path="/register" element={<Register/>} />
-                <Route path="/login" element={<Login/>} />
-                <Route path="/logout" element={<Logout/>} />
-                <Route path="*" element={<Error/>} />
-            </Routes>
-        </Container>
-    </Router>
+    <UserProvider value={{ user, setUser, unsetUser }}>
+      <Router>
+          <Container fluid>
+              <AppNavbar/>
+              <Routes>
+                  <Route path="/" element={<Home/>} />
+                  <Route path="/courses" element={<Courses/>} />
+                  <Route path="/register" element={<Register/>} />
+                  <Route path="/login" element={<Login/>} />
+                  <Route path="/logout" element={<Logout/>} />
+                  <Route path="*" element={<Error/>} />
+              </Routes>
+          </Container>
+      </Router>
+    </UserProvider>
   );
 }
+/*
+  IMPORTANT NOTE:
+    -Storing information in a context object is done by providing the information using tthe corresponding "Provider" component and passing the information via the "value" prop.
+    - All the information provided to the Provider component can be accessed later on from the context object as properties.
+*/
 /*
   IMPORTANT NOTE: 
       - The 'BrowserRouter' component will enable us to simulate page navigation by synchronizing the shown content and the shown URL in the web browser.

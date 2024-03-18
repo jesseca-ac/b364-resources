@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import UserContext from '../UserContext';
+import { Navigate } from 'react-router-dom';
 
 export default function Login() {
-
+	// Allows us to consume the User context object and it's properties to use for user validation.
+	const { user, setUser } = useContext(UserContext);
 
 
 	// State hooks to store the values of the input fields
@@ -71,6 +74,9 @@ export default function Login() {
 
     return (	
 	    	
+    		(user.access !== null) ?
+    			<Navigate to="/courses"/>
+    		:
 	        <Form onSubmit={(e) => authenticate(e)}>
 		    	<h1 className="my-5 text-center">Login</h1>
 		        <Form.Group controlId="userEmail">
@@ -108,6 +114,7 @@ export default function Login() {
     )
 }
 
+// IMPORTANT NOTE!:
 // You may check the stored token under the dev tools > Appliocations> Local Storage 
 // Check if the key value was saved
 // The "localStorage.setItem" allows us to manipulate the browser's localStorage property to store information indefinitely to help demonstrate conditional rendering and the login and logout features.
