@@ -74,7 +74,7 @@ export default function Login() {
 
     return (	
 	    	
-    		(user.access !== null) ?
+    		(user.token !== null) ?
     			<Navigate to="/courses"/>
     		:
 	        <Form onSubmit={(e) => authenticate(e)}>
