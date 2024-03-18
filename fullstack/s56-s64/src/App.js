@@ -7,6 +7,7 @@ import Courses from './pages/Courses'
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
+import Error from './pages/Error';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/register" element={<Register/>} />
                 <Route path="/login" element={<Login/>} />
                 <Route path="/logout" element={<Logout/>} />
+                <Route path="*" element={<Error/>} />
             </Routes>
         </Container>
     </Router>
