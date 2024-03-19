@@ -34,7 +34,9 @@ export default function Login() {
 		.then(res => res.json())
 		.then(data => {
 
-			if(data.access){
+			// If no user information is found, the "access" property will not be available and will return undefined
+			// Using the typeof operator will return a string of the data type of the variable/expression it preceeds which is why the value being compared is in a string data type.
+			if(typeof data.access !== "undefined"){
 
 				// Set the email of the authenticated user in the local storage
 				// Syntax
@@ -60,6 +62,24 @@ export default function Login() {
 
 	    }
 
+	const retrieveUserDetails = (token) => {
+		fetch('http://localhost:4000/users/details', {
+			headers: {
+				Authorization: `Bearer ${ token }`
+			}
+		})
+		.then(res => res.json())
+		.then(data => {
+			console.log(data);
+
+			// Changes the global "user" state to store the "id" and the "isAdmin" property of the user which will be used for validation across the whole application.
+			setUser({
+				id: data.user._id,
+				isAdmin: data.user.isAdmin
+			})
+		})
+	}
+
     useEffect(() => {
 
         // Validation to enable submit button when all fields are populated and both passwords match
@@ -74,9 +94,9 @@ export default function Login() {
 
     return (	
 	    	
-    		(user.token !== null) ?
-    			<Navigate to="/courses"/>
-    		:
+    		// (user.token !== null) ?
+    		// 	<Navigate to="/courses"/>
+    		// :
 	        <Form onSubmit={(e) => authenticate(e)}>
 		    	<h1 className="my-5 text-center">Login</h1>
 		        <Form.Group controlId="userEmail">

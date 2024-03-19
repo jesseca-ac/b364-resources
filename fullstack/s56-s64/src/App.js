@@ -8,10 +8,11 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Error from './pages/Error';
+import Profile from './pages/Profile';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserProvider } from './UserContext';
 
 /*
@@ -39,6 +40,12 @@ function App() {
     localStorage.clear();
   }
 
+  // Used to check if the user information is properly stored upon login and the localStorage information is cleared upon logout
+  useEffect(() => {
+    console.log(user);
+    console.log(localStorage);
+  }, [user])
+
 
   return (
     <UserProvider value={{ user, setUser, unsetUser }}>
@@ -51,6 +58,7 @@ function App() {
                   <Route path="/register" element={<Register/>} />
                   <Route path="/login" element={<Login/>} />
                   <Route path="/logout" element={<Logout/>} />
+                  <Route path="/profile" element={<Profile/>} />
                   <Route path="*" element={<Error/>} />
               </Routes>
           </Container>
