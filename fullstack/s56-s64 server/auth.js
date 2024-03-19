@@ -1,11 +1,8 @@
 // [Section] JSON Web Tokens
-	const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 // [Section] Secret Keyword
-	const secret = "CourseBookingAPI";
-
-
-
+	const secret = "ECommerceAPI";
 
 // [Section] Token creation	
 	module.exports.createAccessToken = (user) => {
@@ -26,7 +23,7 @@
 	*/
 
 	module.exports.verify = (req, res, next) => {
-		console.log(req.headers.authorization);
+		// console.log(req.headers.authorization);
 
 		//req.headers.authorization contains sensitive data and especially our token
 		let token = req.headers.authorization;
@@ -35,9 +32,9 @@
 		if(typeof token === "undefined"){
 			return res.send({auth: "Failed. No Token"});
 		} else {
-			console.log(token);		
+			// console.log(token);		
 			token = token.slice(7, token.length);
-			console.log(token);
+			// console.log(token);
 
 //[SECTION] Token decryption
 	/*
@@ -53,7 +50,7 @@
 						message: err.message
 					});
 				} else {
-					console.log(decodedToken);//contains the data from our token				
+					// console.log(decodedToken);//contains the data from our token				
 					req.user = decodedToken
 					next();
 				}
@@ -65,17 +62,29 @@
 
 
 //[Section] verifyAdmin will also be used a middleware.
+//The order of middlewares are important.
+//In the case of verifyAdmin, verify() should be added as a middleware before it.
+//Else, we won't be able to receive the decodedToken as req.user.
+//verifyAdmin, if used after verify() will be able to receive the modified request object and the response object.
+//Being an ExpressJS middleware, it should also be able to receive the next() method.
 module.exports.verifyAdmin = (req, res, next) => {
+
+	//You can add console.log() to confirm that req.user is added if verify comes first
+	//Else, it will be undefined.
+	//console.log(req.user)	
+
+	//Checks if the owner of the token is an admin.
 	if(req.user.isAdmin){
+		//If it is, move to the next middleware/controller using next() method.
 		next();
 	} else {
-		return res.send({
+		//Else, end the request-response cycle by sending the appropriate response and status code.
+		return res.status(403).send({
 			auth: "Failed",
 			message: "Action Forbidden"
 		})
 	}
 }
-
 
 
 

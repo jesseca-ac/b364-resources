@@ -1,44 +1,36 @@
-//[SECTION] Dependencies and Modules
-	const express = require("express");
-	const mongoose = require("mongoose");
-	const cors = require("cors");
-	const userRoutes = require("./routes/user");
-	const courseRoutes = require("./routes/course");
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const productRoutes = require("./routes/productRoutes");
+const userRoutes = require("./routes/userRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
+// Add the database connection
+mongoose.connect("mongodb+srv://admin:admin123@cluster0.7iowx.mongodb.net/capstone2-ag?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connection.once('open', () => console.log('Now connected to MongoDB Atlas.'))
 
-//[SECTION] Environment Setup
-	const port = 4000;
+// Server setup
+const app = express();
 
-//[SECTION] Server Setup
-	const app = express();
-	
-	app.use(cors())
-	app.use(express.json());
-	app.use(express.urlencoded({ extended: true }));
+//To be updated
+const corsOptions = {
+	origin: ['http://localhost:3000', 'https://agitated-goldwasser-4eebd5.netlify.app'],
+	optionsSuccessStatus: 200
+}
 
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 
-//[SECTION] Database Connection 
-	mongoose.connect("mongodb+srv://andreivon:admin1234@cluster0.qwsgp7m.mongodb.net/Full-stack?retryWrites=true&w=majority&appName=Cluster0", {
-		useNewUrlParser: true,
-		useUnifiedTopology: true
-	});
+//connect routes
+app.use("/products", productRoutes);
+app.use("/users", userRoutes);
+app.use("/orders", orderRoutes);
+app.use("/cart", cartRoutes);
 
-	mongoose.connection.once('open', () => console.log('Now connected to MongoDB Atlas.'));
+app.listen(process.env.PORT || 4000, () => {
+    console.log(`API is now online on port ${ process.env.PORT || 4000 }`)
+});
 
-
-//[SECTION] Backend Routes 
-	//http://localhost:4000/users
-	app.use("/users", userRoutes);
-	//http://localhost:4000/courses
-	app.use("/courses", courseRoutes);
-
-
-//[SECTION] Server Gateway Response
-	if(require.main === module) {
-		app.listen( process.env.PORT || port, () => {
-			console.log(`API is now online on port ${ process.env.PORT || port }`)
-		});
-	}
-
-
-module.exports = app;
+module.exports = { app, mongoose };

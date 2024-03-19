@@ -1,8 +1,9 @@
 //[SECTION] Modules and Dependencies
-   const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 //[SECTION] Schema/Blueprint 
 	const userSchema = new mongoose.Schema({
+		
 		firstName: {
 			type: String,
 			required: [true, 'First Name is Required']
@@ -26,24 +27,8 @@
 		mobileNo: {
 			type: String,
 			required: [true, 'Mobile Number is Required']
-		},
-		enrollments: [
-		   {
-		   	  courseId: {
-		   	  	 type: String,
-		   	  	 required: [true, 'Subject ID is Required'] 
-		   	  },
-		   	  enrolledOn: {
-		   	  	 type: Date,
-		   	  	 default: new Date()
-		   	  }, 
-		   	  status: {
-		   	  	 type: String,
-		   	  	 default: 'Enrolled'
-		   	  }
-		   }
-		] 
+		}
 	});
 
 //[SECTION] Model
-	module.exports = mongoose.model('User', userSchema); 
+	module.exports = mongoose.model('User', userSchema);
