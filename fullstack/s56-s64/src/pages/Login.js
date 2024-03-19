@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import UserContext from '../UserContext';
 import { Navigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function Login() {
 	// Allows us to consume the User context object and it's properties to use for user validation.
@@ -43,16 +44,29 @@ export default function Login() {
 				// localStorage.setItem('propertyName', value)
 				localStorage.setItem('token', data.access);
 
-			console.log('Token:', data.access);
-				alert(`Thank you for logging in`);
+				// function for retrieving details
+				retrieveUserDetails(data.access);
+
+				Swal.fire({
+					title: "Login Successful",
+					icon: "success",
+					text: "Welcome to Zuitt!"
+				});
 			
 			} else if (data.error === "No Email Found") {
 
-				alert(`Unsuccessful Login`);
-
+				Swal.fire({
+					title: "Authentication failed",
+					icon: "error",
+					text: "Check your login details and try again"
+				});
 			} else {
 
-				alert(`${email} does not exist`)
+				Swal.fire({
+					title: "Authentication failed",
+					icon: "error",
+					text: "Check your login details and try again"
+				});
 			}
 		})
 		// Clear input fields after submission
@@ -94,9 +108,9 @@ export default function Login() {
 
     return (	
 	    	
-    		// (user.token !== null) ?
-    		// 	<Navigate to="/courses"/>
-    		// :
+    		(user.id !== null) ?
+    			<Navigate to="/courses"/>
+    		:
 	        <Form onSubmit={(e) => authenticate(e)}>
 		    	<h1 className="my-5 text-center">Login</h1>
 		        <Form.Group controlId="userEmail">

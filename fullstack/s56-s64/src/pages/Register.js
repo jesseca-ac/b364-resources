@@ -104,7 +104,7 @@ export default function Register() {
 
 
 	return (
-		(user.token !== null)?
+		(user.id !== null)?
 			<Navigate to="/courses"/>
 		:
 		<Form onSubmit={(e) => registerUser(e)}>

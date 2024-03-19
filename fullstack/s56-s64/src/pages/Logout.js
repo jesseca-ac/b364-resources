@@ -10,8 +10,11 @@ export default function Logout() {
 
 	useEffect(() => {
 		// Set the user state back to it's original value
-		setUser({access: null})
-	})
+		setUser({
+			id: null,
+			isAdmin: null
+		})
+	}, [])
 
 	return (
 		<Navigate to='/login'/>

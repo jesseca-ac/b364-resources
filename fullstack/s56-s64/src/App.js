@@ -32,7 +32,8 @@ function App() {
   // Initialized as an object with properties from the localStorage
   // This will be used to store the user information and will be used for validating if a user is logged in on the app or not
   const [user, setUser] = useState({
-    token: localStorage.getItem('token')
+      id: null,
+      isAdmin: null
   })
 
   // Function for clearing localStorage on logout
@@ -40,11 +41,38 @@ function App() {
     localStorage.clear();
   }
 
+  /*
+    IMPORTANT NOTE: 
+      Because our user state's values are reset to null everytime the user reloads the page (thus logging the user out), we want to use React's useEffect hook to fetch the logged-in user's details when the page is reloaded. By using the token saved in localStorage when a user logs in, we can fetch their data from the database, re-set the user state values back to the user's details.
+  */
+
   // Used to check if the user information is properly stored upon login and the localStorage information is cleared upon logout
   useEffect(() => {
-    console.log(user);
-    console.log(localStorage);
-  }, [user])
+    fetch('http://localhost:4000/users/details', {
+      headers: {
+        Authorization: `Bearer ${ localStorage.getItem('token')}`
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+
+      if (typeof data.user !== "undefined") {
+        setUser({
+          id: data.user._id,
+          isAdmin: data.user.isAdmin
+        })
+
+      } else {
+
+        setUser({
+          id: null,
+          isAdmin: null
+        })
+      }
+
+    })
+  }, [])
 
 
   return (

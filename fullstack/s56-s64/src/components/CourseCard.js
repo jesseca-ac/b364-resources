@@ -3,7 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 // import PropTypes from 'prop-types';
 
 export default function CourseCard({courseProp}) {
-    const {name, description, price} = courseProp;
+    const {_id, name, description, price} = courseProp;
     // Use the state hook for this component to be able to store its state
     // States are used to keep track of information related to individual components
     // Syntax
