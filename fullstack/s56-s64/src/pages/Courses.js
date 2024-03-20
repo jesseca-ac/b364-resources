@@ -8,12 +8,13 @@ export default function Courses() {
 	const [courses, setCourses] = useState([]);
 
 	useEffect(() => {
-		fetch('http://localhost:4000/courses/')
+		fetch(`${process.env.REACT_APP_API_URL}/courses/`)
 		.then(res => res.json())
 		.then(data => {
 		    
 		    console.log(data);
 
+		    // Sets the "courses" state to map the data retrieved from the fetch request into several "CourseCard" components
 		    setCourses(data.courses.map(course => {
 		        return (
 		            <CourseCard key={course._id} courseProp={course}/>

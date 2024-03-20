@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 export default function CourseCard({courseProp}) {
     const {_id, name, description, price} = courseProp;
@@ -8,26 +9,26 @@ export default function CourseCard({courseProp}) {
     // States are used to keep track of information related to individual components
     // Syntax
         // const [getter, setter] = useState(initialGetterValue);
-    const [count, setCount] = useState(0);
-    const [seats, setSeats] = useState(10);
-    // Using the state hook returns an array with the first element being a value and the second element as a function that's used to change the value of the first element
-    console.log(useState(0));
+    // const [count, setCount] = useState(0);
+    // const [seats, setSeats] = useState(10);
+    // // Using the state hook returns an array with the first element being a value and the second element as a function that's used to change the value of the first element
+    // console.log(useState(0));
 
 
-    // Function that keeps track of the enrollees for a course
-    // By default JavaScript is synchronous it executes code from the top of the file all the way to the bottom and will wait for the completion of one expression before it proceeds to the next
-    // The setter function for useStates are asynchronous allowing it to execute separately from other codes in the program
-    // The "setCount" function is being executed while the "console.log" is already completed resulting in the value to be displayed in the console to be behind by one count.
-    function enroll(){
-        if (seats > 0) {
-            setCount(count + 1);
-            console.log('Enrollees: ' + count);
-            setSeats(seats - 1);
-            console.log('Seats: ' + seats)
-        } else {
-            alert("No more seats available");
-        };
-    }
+    // // Function that keeps track of the enrollees for a course
+    // // By default JavaScript is synchronous it executes code from the top of the file all the way to the bottom and will wait for the completion of one expression before it proceeds to the next
+    // // The setter function for useStates are asynchronous allowing it to execute separately from other codes in the program
+    // // The "setCount" function is being executed while the "console.log" is already completed resulting in the value to be displayed in the console to be behind by one count.
+    // function enroll(){
+    //     if (seats > 0) {
+    //         setCount(count + 1);
+    //         console.log('Enrollees: ' + count);
+    //         setSeats(seats - 1);
+    //         console.log('Seats: ' + seats)
+    //     } else {
+    //         alert("No more seats available");
+    //     };
+    // }
 
     // Checks to see if the data was successfully passed
     // console.log(props);
@@ -42,8 +43,7 @@ export default function CourseCard({courseProp}) {
                 <Card.Text>{description}</Card.Text>
                 <Card.Subtitle>Price:</Card.Subtitle>
                 <Card.Text>{price}</Card.Text>
-                <Card.Text>Seats: {seats}</Card.Text>
-                <Button className="bg-primary" onClick={enroll}>Enroll</Button>
+                <Link className="btn btn-primary" to={`/courses/${_id}`}>Details</Link>
             </Card.Body>
         </Card>
     )
