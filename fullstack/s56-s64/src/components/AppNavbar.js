@@ -21,6 +21,14 @@ export default function AppNavbar() {
 				            <Nav.Link as={NavLink} to="/" exact="true">Home</Nav.Link>
 				            <Nav.Link as={NavLink} to="/courses" exact="true">Courses</Nav.Link>
 				            {(user.id !== null) ?
+
+				            user.isAdmin
+				            ?
+				            <>
+				            	<Nav.Link as ={Link} to="/addCourse">Add Course</Nav.Link>
+				            	<Nav.Link as ={Link} to="/logout">Logout</Nav.Link>
+				            </>
+				            :
 				            <>
 				            	<Nav.Link as={NavLink} to="/profile" exact="true">Profile</Nav.Link>
 				            	<Nav.Link as={NavLink} to="/logout" exact="true">Logout</Nav.Link>

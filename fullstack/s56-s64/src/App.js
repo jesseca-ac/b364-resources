@@ -5,6 +5,7 @@ import AppNavbar from './components/AppNavbar';
 import Home from './pages/Home'
 import Courses from './pages/Courses'
 import CourseView from './pages/CourseView';
+import AddCourse from './pages/AddCourse';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
@@ -84,10 +85,11 @@ function App() {
               <Routes>
                   <Route path="/" element={<Home/>} />
                   <Route path="/courses" element={<Courses/>} />
-                  <Route exact="true" path="/courses/:courseId" component={CourseView} />
+                  <Route path="/courses/:courseId" element={<CourseView/>}/>
                   <Route path="/register" element={<Register/>} />
                   <Route path="/login" element={<Login/>} />
                   <Route path="/logout" element={<Logout/>} />
+                  <Route path="/addCourse" element={<AddCourse/>} />
                   <Route path="/profile" element={<Profile/>} />
                   <Route path="*" element={<Error/>} />
               </Routes>

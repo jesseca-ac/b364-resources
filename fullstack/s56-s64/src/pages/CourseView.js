@@ -93,7 +93,7 @@ export default function CourseView() {
 							  <Button variant="primary" onClick={() => enroll(courseId)}>Enroll</Button>
 							  :
 
-							  <Link className="btn btn-danger"</Link>
+							  <Link className="btn btn-danger btn-block" to="/login">Log in to Enroll</Link>
 							}
 						</Card.Body>		
 					</Card>
