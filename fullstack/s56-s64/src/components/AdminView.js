@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
+import EditCourse from './EditCourse';
+
 
 export default function AdminView({ coursesData }) {
 
@@ -23,7 +25,7 @@ export default function AdminView({ coursesData }) {
 					<td className={course.props.courseProp.isActive ? "text-success" : "text-danger"}>
 					{course.props.courseProp.isActive ? "Available" : "Unavailable"}
 					</td>
-					<td><button className="btn btn-primary ">Edit</button></td>	
+					<td><EditCourse course={course.props.courseProp._id}/></td>	
 					<td><button className="btn btn-danger">Archive</button></td>	
 				</tr>
 				)

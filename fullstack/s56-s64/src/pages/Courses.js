@@ -10,37 +10,41 @@ export default function Courses() {
 
 	const [courses, setCourses] = useState([]);
 
-	let url; 
 
-	if(user.isAdmin){
-		url = 'http://localhost:4000/courses/all'
-	} else {
-		url = 'http://localhost:4000/courses/';
-	}
+
+   const fetchData = () => {
+
+   	let fetchUrl = user.isAdmin === true? "http://localhost:4000/courses/all" : "http://localhost:4000/courses/"
+
+   	fetch(fetchUrl, {
+   		headers: {
+   			Authorization: `Bearer ${ localStorage.getItem('token')}`
+   		}
+   	})
+   	.then(res => res.json())
+   	.then(data => {
+   		console.log(data);
+   		console.log(typeof data.message)
+
+   		if (typeof data.message !=="string") {
+   			setCourses(data.courses);
+   		} else {
+   			setCourses([])
+   		}
+   	})
+   }
 
    useEffect(() => {
-   		fetch(url, {
-   			headers: {
-   				Authorization: `Bearer ${localStorage.getItem('token')}`
-   			}
-   		})
-   		.then(res => res.json())
-   		.then(data => {
-   			console.log(data);
-   		setCourses(data.courses.map(course => {
-   						return (
-   							<CourseCard key={course._id} courseProp={course} />
-   						
-   							)
-   					}))
-   				})
-   		}, [])
+
+   		fetchData()
+
+   }, [])
 		
 	return(
 			<>
 				{
 					(user.isAdmin === true) ?
-						<AdminView coursesData={courses} />
+						<AdminView coursesData={courses} fetchData={fetchData} />
 
 					:
 
