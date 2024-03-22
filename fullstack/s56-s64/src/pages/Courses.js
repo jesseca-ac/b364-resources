@@ -1,39 +1,56 @@
+import { useEffect, useState, useContext } from 'react';
+import UserView from '../components/UserView';
+import AdminView from '../components/AdminView';
+import UserContext from '../UserContext';
 import CourseCard from '../components/CourseCard';
-// import coursesData from '../data/coursesData';
-import { useEffect, useState } from 'react';
-
 
 export default function Courses() {
 
+	const {user} = useContext(UserContext)
+
 	const [courses, setCourses] = useState([]);
 
-	useEffect(() => {
-		fetch(`${process.env.REACT_APP_API_URL}/courses/`)
-		.then(res => res.json())
-		.then(data => {
-		    
-		    console.log(data);
+	let url; 
 
-		    // Sets the "courses" state to map the data retrieved from the fetch request into several "CourseCard" components
-		    setCourses(data.courses.map(course => {
-		        return (
-		            <CourseCard key={course._id} courseProp={course}/>
-		        );
-		    }));
+	if(user.isAdmin){
+		url = 'http://localhost:4000/courses/all'
+	} else {
+		url = 'http://localhost:4000/courses/';
+	}
 
-		});
-
-    }, []);
-
+   useEffect(() => {
+   		fetch(url, {
+   			headers: {
+   				Authorization: `Bearer ${localStorage.getItem('token')}`
+   			}
+   		})
+   		.then(res => res.json())
+   		.then(data => {
+   			console.log(data);
+   		setCourses(data.courses.map(course => {
+   						return (
+   							<CourseCard key={course._id} courseProp={course} />
+   						
+   							)
+   					}))
+   				})
+   		}, [])
 		
-	return (
-		<>
-			{courses}
-		</>
+	return(
+			<>
+				{
+					(user.isAdmin === true) ?
+						<AdminView coursesData={courses} />
 
-	)
+					:
 
+						<UserView coursesData={courses} />
+				}
+			</>
+		
+			)
 }
+	
 
 	// console.log(coursesData[0]);
 	/* 
