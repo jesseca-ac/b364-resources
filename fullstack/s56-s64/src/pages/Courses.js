@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 import UserView from '../components/UserView';
 import AdminView from '../components/AdminView';
 import UserContext from '../UserContext';
@@ -10,9 +10,8 @@ export default function Courses() {
 
 	const [courses, setCourses] = useState([]);
 
-
-
-   const fetchData = () => {
+	
+   const fetchData = useCallback(() => {
 
    	let fetchUrl = user.isAdmin === true? "http://localhost:4000/courses/all" : "http://localhost:4000/courses/"
 
@@ -32,19 +31,20 @@ export default function Courses() {
    			setCourses([])
    		}
    	})
-   }
+   }, [user.isAdmin])
 
    useEffect(() => {
 
    		fetchData()
 
-   }, [])
+   }, [fetchData])
+		
 		
 	return(
 			<>
 				{
 					(user.isAdmin === true) ?
-						<AdminView coursesData={courses} fetchData={fetchData} />
+						<AdminView coursesData={courses} fetchData={fetchData}  />
 
 					:
 

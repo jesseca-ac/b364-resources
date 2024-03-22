@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
 //connect routes
-app.use("/course", courseRoutes);
+app.use("/courses", courseRoutes);
 app.use("/users", userRoutes);
 
 

@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 
 
-export default function EditCourse({ course }) {
+export default function EditCourse({ course, fetchData }) {
 	// state for courseId for the fetch URL
 	const [courseId, setCourseId] = useState('');
 
@@ -21,7 +21,7 @@ export default function EditCourse({ course }) {
 		fetch(`http://localhost:4000/courses/${ courseId }`)
 		.then(res => res.json())
 		.then(data => {
-			setCourseId(data._id)
+			setCourseId(data.course._id)
 			setName(data.course.name);
 			setDescription(data.course.description);
 			setPrice(data.course.price)
@@ -81,7 +81,7 @@ export default function EditCourse({ course }) {
 
 			<Modal show={showEdit} onHide={closeEdit}>
                 <Form onSubmit={e => editCourse(e, courseId)}> 
-                
+
                     <Modal.Header closeButton>
                         <Modal.Title>Edit Course</Modal.Title>
                     </Modal.Header>

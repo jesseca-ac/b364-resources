@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import EditCourse from './EditCourse';
+import EditCourse from './EditCourse'
 
 
-export default function AdminView({ coursesData }) {
+export default function AdminView({ coursesData, fetchData }) {
 
 	// b. Add state to store all courses 
 	const [courses, setCourses] = useState([])
@@ -17,15 +17,15 @@ export default function AdminView({ coursesData }) {
 
 			// Return a table row (tr) with the relevant course information
 			return (
-				<tr key={course.props.courseProp._id}>
-					<td>{course.props.courseProp._id}</td>
-					<td>{course.props.courseProp.name}</td>
-					<td>{course.props.courseProp.description}</td>
-					<td>{course.props.courseProp.price}</td>
-					<td className={course.props.courseProp.isActive ? "text-success" : "text-danger"}>
-					{course.props.courseProp.isActive ? "Available" : "Unavailable"}
+				<tr key={course._id}>
+					<td>{course._id}</td>
+					<td>{course.name}</td>
+					<td>{course.description}</td>
+					<td>{course.price}</td>
+					<td className={course.isActive ? "text-success" : "text-danger"}>
+					{course.isActive ? "Available" : "Unavailable"}
 					</td>
-					<td><EditCourse course={course.props.courseProp._id}/></td>	
+					<td><EditCourse course={course._id}/></td>	
 					<td><button className="btn btn-danger">Archive</button></td>	
 				</tr>
 				)
