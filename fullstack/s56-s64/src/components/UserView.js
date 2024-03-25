@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CourseCard from './CourseCard';
-// import CourseSearch from './CourseSearch';
+import CourseSearch from './CourseSearch';
 
 
 export default function UserView({coursesData}) {
@@ -28,6 +28,7 @@ export default function UserView({coursesData}) {
 
 	return(
 		<>
+			<CourseSearch/>
 			{ courses }
 		</>
 		)
