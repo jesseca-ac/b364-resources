@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import EditCourse from './EditCourse'
+import ArchiveCourse from './ArchiveCourse';
 
 
 export default function AdminView({ coursesData, fetchData }) {
-
 	// b. Add state to store all courses 
 	const [courses, setCourses] = useState([])
 
@@ -26,7 +26,7 @@ export default function AdminView({ coursesData, fetchData }) {
 					{course.isActive ? "Available" : "Unavailable"}
 					</td>
 					<td><EditCourse course={course._id}/></td>	
-					<td><button className="btn btn-danger">Archive</button></td>	
+					<td><ArchiveCourse course={course._id} isActive={course.isActive} fetchData={fetchData}/></td>
 				</tr>
 				)
 		})
