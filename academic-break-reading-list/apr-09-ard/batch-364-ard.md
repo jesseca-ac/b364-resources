@@ -25,7 +25,7 @@
 ### **Goal to Checking**
 
 - **REACT JS SIMPLE APPLICATION ACTIVITY:**
-  1. Create a simple React application based on the concepts learned from the provided references..
+  1. Create a simple React application based on the concepts learned from the provided references.
   2. The application should incorporate at least one component from React Bootstrap and demonstrate understanding of passing props.
   3. The application should have a form that collects user input (e.g., name and email).
   4. Upon submitting the form, the entered data should be displayed on the screen.
