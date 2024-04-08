@@ -3,32 +3,30 @@
 
 ### **Topics**
 
-- **ADDITIONAL READING MATERIALS FOR REACT**
+- **REACT - CSP3 S73 SESSION DELIVERABLES:**
   - [React Bootstrap - Getting started](https://react-bootstrap.netlify.app/docs/getting-started/introduction)
   - [React Bootstrap - Forms](https://react-bootstrap.netlify.app/docs/forms/overview)
   - [React - Dev](https://react.dev/blog/2023/03/16/introducing-react-dev)
-  - [React- Thinking in React](https://react.dev/learn/thinking-in-react)
-  - [React- Describing the UI](https://react.dev/learn/describing-the-ui)
-  - [React- Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component)
 
 
 ### **Purpose**
 
-- **Supplementary documentations for better understanding of REACT**
-  - Integrate the methods/concepts that you've learned from the documentations in your future projects.
-  - Understand the different layers of making components.
-  - Review the purpose and methods used for Passing props to different components.
+- **Capstone 3 Making an e-commerce application through REACT.JS AND API:**
+  - Integrate the connection between REACT.js App and Express API.
+  - Understand how to create an e-commerce application with MVP requirements.
   
 
 
 
 ### **Goal to Checking**
 
-- **REACT JS SIMPLE APPLICATION ACTIVITY:**
-  1. Create a simple React application based on the concepts learned from the provided references.
-  2. The application should incorporate at least one component from React Bootstrap and demonstrate understanding of passing props.
-  3. The application should have a form that collects user input (e.g., name and email).
-  4. Upon submitting the form, the entered data should be displayed on the screen.
-  5. Use at least one component from React Bootstrap for styling or form elements.
-  6. Implement passing props to components to manage data flow.
- 
+- **REACT JS CAPSTONE 3 STRETCH GOALS:**
+  1. Create an Order History Page.
+  2. Retrieve authenticated user's orders (purchased products)
+  3. Retrieve all orders (ADMIN ONLY)
+  4. Set a user as an admin (ADMIN ONLY)
+  5. Add to Cart Feature
+  6. Full responsiveness across mobile/tablet/desktop screen sizes
+  7. Product images
+  8. A hot products/featured products section
+  9. View User Details (Profile) - You can change their password
