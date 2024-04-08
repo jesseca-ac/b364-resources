@@ -100,8 +100,8 @@ describe('[4] getAvailableBooks returns correct array from given arguments', fun
           ];
 
         expect(solutions.getAvailableBooks(books,borrowers)[0].title).toEqual("Book 1");
-        expect(solutions.getAvailableBooks(books,borrowers)[1].title).toEqual("Book 4");
-        expect(solutions.getAvailableBooks(books,borrowers)[2].title).toEqual("Book 5");
+        expect(solutions.getAvailableBooks(books,borrowers)[1].title).toEqual("Book 2");
+        expect(solutions.getAvailableBooks(books,borrowers)[2].title).toEqual("Book 3");
 
     });
 
